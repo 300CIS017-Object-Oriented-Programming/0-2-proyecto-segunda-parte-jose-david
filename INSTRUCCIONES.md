@@ -34,37 +34,29 @@ El sistema debe manejar tres tipos específicos de eventos, cada uno con caracte
 #### Criterios de aceptación:
 
 - Se deben manejar 3 tipos de eventos en el sistema: evento en Bar, evento en Teatro y evento Filantrópico (boletería
-  sin costo).
+  sin costo). _**CREAR EVENTO**_
 - El sistema permite ingresar detalles del evento como artista o artistas del show, nombre, fecha, hora de apertura de
-  puertas, hora del show, lugar, dirección y ciudad.
+  puertas, hora del show, lugar, dirección y ciudad.  _**CREAR EVENTO**_
 - El sistema permite definir el estado del evento (realizado, por realizar, cancelado, aplazado, cerrado). Cambios en el
-  estado "realizado" están restringidos.
+  estado "realizado" están restringidos. _**ATRIBUTO EN EVENTO**_
 - El administrador puede definir precios de boletas para diferentes categorías y fases de venta (preventa y venta
-  regular).
-- Se impide la eliminación de eventos con boletería vendida.
-- El sistema permite definir el aforo total del evento.
+  regular)._**BOLETERIA**_
+- Se impide la eliminación de eventos con boletería vendida. _**BOLETERIA**_
+- El sistema permite definir el aforo total del evento. _**CREAR EVENTO**_
 
 ## 🎟️ Gestión de Boletería
 
-- Se requieren datos del comprador y cómo se enteró del evento al vender una boleta.
-- El sistema verifica la disponibilidad de aforo antes de completar la venta.
-- El precio de la boleta varía según la fase de venta y aplicaciones de descuentos.
-- Las boletas de cortesía se pueden emitir con un precio de cero.
-- **Generación de PDF con la boleta:** Use alguna librería de Python para generar la boleta. Agregue en el PDF
+- Se requieren datos del comprador y cómo se enteró del evento al vender una boleta._**CREAR EVENTO**_
+- El sistema verifica la disponibilidad de aforo antes de completar la venta. _**BOLETERIA**_ 
+- El precio de la boleta varía según la fase de venta y aplicaciones de descuentos. _**BOLETERIA**_
+- Las boletas de cortesía se pueden emitir con un precio de cero. _**BOLETERIA Y EVENTO FILANTROPICO**_  
+- **Generación de PDF con la boleta:** Use alguna librería de Python para generar la boleta. Agregue en el PDF 
+_**AVERIGUAR. BOLETERIA**_
+- 
   información importante para el acceso al evento. Piense que su aplicación le aporte valor a los usuarios potenciales
   entonces analice cuidadosamente la información que incluiría en su pdf. El administrador usará esa boleta para
   enviarla posteriormente al cliente.
 
-### Criterios de aceptación:
-
-- Se requieren datos del comprador y cómo se enteró del evento al vender una boleta.
-- El sistema verifica la disponibilidad de aforo antes de completar la venta.
-- El precio de la boleta varía según la fase de venta y aplicaciones de descuentos.
-- Las boletas de cortesía se pueden emitir con un precio de cero.
-- **Generación de PDF con la boleta (use alguna librería de Python para generar la boleta). Agregue en el PDF
-  información importante para el acceso al evento. Piense que su aplicación le aporte valor a los usuarios potenciales
-  entonces analice cuidadosamente la información que incluiría en su pdf. El administrador usará esa boleta para
-  enviarla posteriormente al cliente.**
 
 ## 🚪 Gestión de Ingreso al Evento
 
@@ -88,32 +80,6 @@ El sistema debe manejar tres tipos específicos de eventos, cada uno con caracte
   reportar datos generales de sus eventos gestionados en el sistema. En los datos generales de cada evento deben estar
   cosas como (nombre del evento, fecha, lugar, cantidad de boletas vendidas, porcentaje de aforo cubierto).
 
-### 📈 Tablero de Control
-
-Para el usuario es importante tener un tablero de control (dashboard) en el que pueda visualizar el estado de la gestión
-de eventos para un rango de fechas. Agregue al menos en este dashboard gráficos que permitan ver información relacionada
-con la cantidad de eventos por tipo que se han organizado en cierto periodo de tiempo, ingresos totales por eventos para
-el rango de fechas definidas.## 🚪 Gestión de Ingreso al Evento
-
-- Su aplicación debe permitir registrar el día del evento el ingreso.
-- Para ello debe contar con algún mecanismo que permita buscar rápidamente una boleta vendida o un comprador a fin de
-  registrar su asistencia.
-- Nuevamente, piense que su aplicación le aporte valor a los usuarios potenciales entonces analice cuidadosamente que
-  mecanismo usaría para facilitar la búsqueda.
-
-## 📊 Generación de Reportes Detallados
-
-### Criterios de aceptación:
-
-- **Reporte de Ventas de Boletas:** Detalla cantidad de boletas vendidas por tipo (incluyendo cortesías) y los ingresos
-  totales por preventa y venta regular.
-- **Reporte Financiero:** Desglosa los ingresos por tipo de pago y tipo de boletería.
-- **Reporte de Datos de los Compradores:** Ofrece información detallada de los compradores permitiendo análisis
-  demográficos y de comportamiento para estrategias de marketing. Debe incluir al menos dos gráficas visualizando esta
-  información (en Plotly) y los datos (sin las gráficas) deben estar disponibles para descargar en formato Excel ( puede usar pandas u openpyxl).
-- **Reporte de Datos por Artista:** Dado un artista (que se puede filtrar desde la interfaz gráfica) será posible
-  reportar datos generales de sus eventos gestionados en el sistema. En los datos generales de cada evento deben estar
-  cosas como (nombre del evento, fecha, lugar, cantidad de boletas vendidas, porcentaje de aforo cubierto).
 
 ### 📈 Tablero de Control
 
