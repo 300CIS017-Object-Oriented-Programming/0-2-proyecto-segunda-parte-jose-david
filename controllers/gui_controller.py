@@ -15,7 +15,7 @@ class GUIController:
             self.run_page = st.session_state.my_state.run_page
 
     def main(self):
-        draw_option_menu(self)
+        draw_option_menu(self) # Menu de opciones siempre abierto sin necesitar condicional
         if self.run_page == 'home':
             draw_home_page()
         elif self.run_page == 'event_manager':
