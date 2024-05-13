@@ -1,7 +1,7 @@
 from models.event import Event
 
 
-class Philanthropic(Event):
+class PhilanthropicEvent(Event):
     def __init__(self, name, date, opening_time, show_time, location, address, city, artists, tickets, sponsors,
                  sponsorship_amount):
         super().__init__(name, date, opening_time, show_time, location, address, city, artists, tickets)

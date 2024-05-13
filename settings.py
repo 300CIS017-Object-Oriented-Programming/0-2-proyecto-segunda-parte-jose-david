@@ -46,3 +46,45 @@ function set_title_color() {
 document.addEventListener('DOMContentLoaded', set_title_color);
 </script>
 """
+
+
+
+BAR_EVENT_FIELDS = {
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists"},
+    "tickets": {"type": "number", "label": "Tickets"},
+    "bar_profit": {"type": "number", "label": "Bar Profit"},
+    "artist_payment": {"type": "number", "label": "Artist Payment"},
+}
+
+THEATER_EVENT_FIELDS = {
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists"},
+    "tickets": {"type": "number", "label": "Tickets"},
+    "rental_cost": {"type": "number", "label": "Rental Cost"},
+}
+
+PHILANTHROPIC_EVENT_FIELDS = {
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists"},
+    "tickets": {"type": "number", "label": "Tickets"},
+    "donation_target": {"type": "number", "label": "Donation Target"},
+}

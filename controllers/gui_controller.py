@@ -26,3 +26,11 @@ class GUIController:
             draw_access_management_page()
         elif self.run_page == 'reports':
             draw_reports_page()
+
+    def create_event(self, event_type, event_data):
+        if event_type == "bar":
+            self.back_controller.create_bar_event(**event_data)
+        elif event_type == "theater":
+            self.back_controller.create_theater_event(**event_data)
+        elif event_type == "philanthropic":
+            self.back_controller.create_philanthropic_event(**event_data)
