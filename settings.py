@@ -58,7 +58,6 @@ BAR_EVENT_FIELDS = {
     "address": {"type": "text", "label": "Address"},
     "city": {"type": "text", "label": "City"},
     "artists": {"type": "text", "label": "Artists"},
-    "tickets": {"type": "number", "label": "Tickets"},
     "bar_profit": {"type": "number", "label": "Bar Profit"},
     "artist_payment": {"type": "number", "label": "Artist Payment"},
 }
@@ -72,7 +71,6 @@ THEATER_EVENT_FIELDS = {
     "address": {"type": "text", "label": "Address"},
     "city": {"type": "text", "label": "City"},
     "artists": {"type": "text", "label": "Artists"},
-    "tickets": {"type": "number", "label": "Tickets"},
     "rental_cost": {"type": "number", "label": "Rental Cost"},
 }
 
@@ -85,6 +83,6 @@ PHILANTHROPIC_EVENT_FIELDS = {
     "address": {"type": "text", "label": "Address"},
     "city": {"type": "text", "label": "City"},
     "artists": {"type": "text", "label": "Artists"},
-    "tickets": {"type": "number", "label": "Tickets"},
-    "donation_target": {"type": "number", "label": "Donation Target"},
+    "sponsors": {"type": "text", "label": "Sponsors"},
+    "sponsorship_amount": {"type": "number", "label": "Sponsorship Amount"},
 }

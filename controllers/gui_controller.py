@@ -28,9 +28,10 @@ class GUIController:
             draw_reports_page()
 
     def create_event(self, event_type, event_data):
-        if event_type == "bar":
-            self.back_controller.create_bar_event(**event_data)
-        elif event_type == "theater":
-            self.back_controller.create_theater_event(**event_data)
-        elif event_type == "philanthropic":
-            self.back_controller.create_philanthropic_event(**event_data)
+        if self.back_controller.event_exists(event_data['date']):
+            st.error("Ya existe un evento en esa fecha")
+        else:
+            self.back_controller.create_event(event_type, **event_data)
+            st.success("Evento creado con éxito")
+
+

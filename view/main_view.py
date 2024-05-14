@@ -1,8 +1,7 @@
 import streamlit as st
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
-from view.event_view import draw_create_event_interface
-from settings import BAR_EVENT_FIELDS, THEATER_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS
+from view.event_view import draw_create_event_interface, choose_event_fields
 
 
 def draw_option_menu(gui_controller):
@@ -32,30 +31,34 @@ def draw_home_page():
 
 
 def draw_event_manager_page(gui_controller):
+    # Titulo de la página
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Gestor de eventos</div>", unsafe_allow_html=True)
-    st.subheader("Crear Evento")  # FIX ME. Cambiaar css
-    empty_col0, col1, col2, col3, empty_col4 = st.columns([2, 2, 2, 2, 2])
+
+    # Creacion de eventos
+    st.subheader("Crear Evento")
+    empty_col1, col1, empty_col2 = st.columns([0.9, 2.5, 1])
 
     with col1:
-        if st.button("Evento bar"):
-            draw_create_event_interface(gui_controller, "bar", BAR_EVENT_FIELDS)
-    with col2:
-        if st.button("Evento filantropico"):
-            draw_create_event_interface(gui_controller, "philanthropic", PHILANTHROPIC_EVENT_FIELDS)
-    with col3:
-        if st.button("Evento teatro"):
-            draw_create_event_interface(gui_controller, "theater", THEATER_EVENT_FIELDS)
-    st.subheader("Consultar evento")
-    event_date = st.date_input("Fecha del evento")
-    if st.button("Buscar"):
-        event = gui_controller.back_controller.get_event_by_date(event_date)
-        if event is not None:
-            st.write(f"Nombre del evento: {event.name}")
-            st.write(f"Fecha del evento: {event.date}")
-            # Continúa mostrando los demás datos del evento
-        else:
-            st.write("No se encontró ningún evento en la fecha seleccionada.")
+        event_type = st.selectbox("Seleccione el tipo de evento", ["Seleccione...", "bar", "philanthropic", "theater"])
+
+        # Elegir los campos del evento dependiendo del tipo de evento
+        event_fields = choose_event_fields(event_type)
+
+        # Si se ha seleccionado un tipo de evento, dibuja la interfaz de creación de eventos
+        if event_fields is not None and event_type != "Seleccione...":
+            draw_create_event_interface(gui_controller, event_type, event_fields)
+
+    """ st.subheader("Consultar evento")
+        event_date = st.date_input("Fecha del evento")
+        if st.button("Buscar"):
+            event = gui_controller.back_controller.get_event_by_date(event_date)
+            if event is not None:
+                st.write(f"Nombre del evento: {event.name}")
+                st.write(f"Fecha del evento: {event.date}")
+                # Continúa mostrando los demás datos del evento
+            else:
+                st.write("No se encontró ningún evento en la fecha seleccionada.")"""
 
 
 def draw_ticket_office_page():
