@@ -47,42 +47,40 @@ document.addEventListener('DOMContentLoaded', set_title_color);
 </script>
 """
 
-
-
 BAR_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
-    "date": {"type": "date", "label": "Date"},
-    "opening_time": {"type": "time", "label": "Opening Time"},
-    "show_time": {"type": "time", "label": "Show Time"},
-    "location": {"type": "text", "label": "Location"},
-    "address": {"type": "text", "label": "Address"},
-    "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
-    "bar_profit": {"type": "number", "label": "Bar Profit"},
-    "artist_payment": {"type": "number", "label": "Artist Payment"},
+    "name": {"type": "text", "label": "Nombre"},
+    "date": {"type": "date", "label": "Fecha"},
+    "opening_time": {"type": "time", "label": "Hora de apertura"},
+    "show_time": {"type": "time", "label": "Hora del espectáculo"},
+    "location": {"type": "text", "label": "Ubicación"},
+    "address": {"type": "text", "label": "Dirección"},
+    "city": {"type": "text", "label": "Ciudad"},
+    "artists": {"type": "text", "label": "Artistas"},
+    "bar_profit": {"type": "number", "label": "Ganancia del bar"},
+    "artist_payment": {"type": "number", "label": "Pago al artista"},
 }
 
 THEATER_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
-    "date": {"type": "date", "label": "Date"},
-    "opening_time": {"type": "time", "label": "Opening Time"},
-    "show_time": {"type": "time", "label": "Show Time"},
-    "location": {"type": "text", "label": "Location"},
-    "address": {"type": "text", "label": "Address"},
-    "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
-    "rental_cost": {"type": "number", "label": "Rental Cost"},
+    "name": {"type": "text", "label": "Nombre"},
+    "date": {"type": "date", "label": "Fecha"},
+    "opening_time": {"type": "time", "label": "Hora de apertura"},
+    "show_time": {"type": "time", "label": "Hora del espectáculo"},
+    "location": {"type": "text", "label": "Ubicación"},
+    "address": {"type": "text", "label": "Dirección"},
+    "city": {"type": "text", "label": "Ciudad"},
+    "artists": {"type": "text", "label": "Artistas"},
+    "rental_cost": {"type": "number", "label": "Costo de alquiler"},
 }
 
 PHILANTHROPIC_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
-    "date": {"type": "date", "label": "Date"},
-    "opening_time": {"type": "time", "label": "Opening Time"},
-    "show_time": {"type": "time", "label": "Show Time"},
-    "location": {"type": "text", "label": "Location"},
-    "address": {"type": "text", "label": "Address"},
-    "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
-    "sponsors": {"type": "text", "label": "Sponsors"},
-    "sponsorship_amount": {"type": "number", "label": "Sponsorship Amount"},
+    "name": {"type": "text", "label": "Nombre"},
+    "date": {"type": "date", "label": "Fecha"},
+    "opening_time": {"type": "time", "label": "Hora de apertura"},
+    "show_time": {"type": "time", "label": "Hora del espectáculo"},
+    "location": {"type": "text", "label": "Ubicación"},
+    "address": {"type": "text", "label": "Dirección"},
+    "city": {"type": "text", "label": "Ciudad"},
+    "artists": {"type": "text", "label": "Artistas"},
+    "sponsors": {"type": "text", "label": "Patrocinadores"},
+    "sponsorship_amount": {"type": "number", "label": "Monto del patrocinio"},
 }

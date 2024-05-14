@@ -1,7 +1,6 @@
 from models.bar_event import BarEvent
 from models.philanthropic_event import PhilanthropicEvent
 from models.theater_event import TheaterEvent
-import json
 
 
 class BackController:
@@ -15,11 +14,13 @@ class BackController:
 
         if event_type == "bar":
             self.events[event_data['date']] = BarEvent(**event_data)
+            self.events[event_data['date']].type = 'Bar'
         elif event_type == "theater":
             self.events[event_data['date']] = TheaterEvent(**event_data)
+            self.events[event_data['date']].type = 'Filantropico'
         elif event_type == "philanthropic":
             self.events[event_data['date']] = PhilanthropicEvent(**event_data)
-        print(self.events)
+            self.events[event_data['date']].type = 'Teatro'
 
     def get_event_by_date(self, date):
         return self.events.get(date, None)

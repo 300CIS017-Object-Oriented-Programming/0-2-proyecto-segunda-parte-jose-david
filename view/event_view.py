@@ -1,5 +1,4 @@
 import streamlit as st
-from settings import BAR_EVENT_FIELDS, THEATER_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS
 
 
 def draw_create_event_interface(gui_controller, event_type, event_fields):
@@ -32,12 +31,30 @@ def draw_input_field(field, config):
         st.number_input(config["label"], key=field)
 
 
-def choose_event_fields(event_type):
-    event_fields = None
-    if event_type == "bar":
-        event_fields = BAR_EVENT_FIELDS
-    elif event_type == "philanthropic":
-        event_fields = PHILANTHROPIC_EVENT_FIELDS
-    elif event_type == "theater":
-        event_fields = THEATER_EVENT_FIELDS
-    return event_fields
+def display_event(gui_controller, event, event_type):
+    # Convertir el objeto de evento en un diccionario de atributos
+    event_dict = vars(event)
+
+    # Obtener el diccionario de campos correspondiente al tipo de evento
+    event_fields = gui_controller.choose_event_fields(event_type)
+
+    # Crear tres columnas
+    col1, col2, col3 = st.columns(3)
+
+    # Dividir los campos en tres listas
+    fields = list(event_fields.items())
+    third = len(fields) // 3
+    fields1 = fields[:third]
+    fields2 = fields[third:2*third]
+    fields3 = fields[2*third:]
+
+    # Mostrar los campos en las tres columnas
+    for field, config in fields1:
+        with col1:
+            st.write(f"{config['label']}: {event_dict.get(field, '')}")
+    for field, config in fields2:
+        with col2:
+            st.write(f"{config['label']}: {event_dict.get(field, '')}")
+    for field, config in fields3:
+        with col3:
+            st.write(f"{config['label']}: {event_dict.get(field, '')}")

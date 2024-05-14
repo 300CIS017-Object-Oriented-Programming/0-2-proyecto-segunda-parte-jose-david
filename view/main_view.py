@@ -1,7 +1,7 @@
 import streamlit as st
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
-from view.event_view import draw_create_event_interface, choose_event_fields
+from view.event_view import draw_create_event_interface, display_event
 
 
 def draw_option_menu(gui_controller):
@@ -43,22 +43,20 @@ def draw_event_manager_page(gui_controller):
         event_type = st.selectbox("Seleccione el tipo de evento", ["Seleccione...", "bar", "philanthropic", "theater"])
 
         # Elegir los campos del evento dependiendo del tipo de evento
-        event_fields = choose_event_fields(event_type)
+        event_fields = gui_controller.choose_event_fields(event_type)
 
         # Si se ha seleccionado un tipo de evento, dibuja la interfaz de creación de eventos
         if event_fields is not None and event_type != "Seleccione...":
             draw_create_event_interface(gui_controller, event_type, event_fields)
 
-    """ st.subheader("Consultar evento")
-        event_date = st.date_input("Fecha del evento")
-        if st.button("Buscar"):
-            event = gui_controller.back_controller.get_event_by_date(event_date)
-            if event is not None:
-                st.write(f"Nombre del evento: {event.name}")
-                st.write(f"Fecha del evento: {event.date}")
-                # Continúa mostrando los demás datos del evento
-            else:
-                st.write("No se encontró ningún evento en la fecha seleccionada.")"""
+    st.subheader("Consultar evento")
+    event_date_consult = st.date_input("Ingrese la fecha del evento a consultar")
+    if st.button("Buscar"):
+        searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
+        if searched_event is not None:
+            display_event(gui_controller, searched_event, event_type)
+        else:
+            st.error("No se encontró ningún evento en la fecha seleccionada.")
 
 
 def draw_ticket_office_page():
