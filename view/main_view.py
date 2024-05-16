@@ -1,7 +1,7 @@
 import streamlit as st
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
-from view.event_view import draw_create_event_interface, display_event
+from view.event_view import draw_create_event_interface, display_event, draw_events_library
 
 
 def draw_option_menu(gui_controller):
@@ -57,6 +57,15 @@ def draw_event_manager_page(gui_controller):
             display_event(gui_controller, searched_event, event_type)
         else:
             st.error("No se encontró ningún evento en la fecha seleccionada.")
+
+    if "show_library" not in st.session_state:
+        st.session_state.show_library = False
+
+    if st.button("Biblioteca de eventos"):
+        st.session_state.show_library = True
+
+    if st.session_state.show_library:
+        draw_events_library(gui_controller)
 
 
 def draw_ticket_office_page():
