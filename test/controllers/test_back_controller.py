@@ -3,6 +3,7 @@ from controllers.back_controller import BackController
 from models.bar_event import BarEvent
 from models.theater_event import TheaterEvent
 from models.philanthropic_event import PhilanthropicEvent
+from settings import bar_event_data, theater_event_data, philanthropic_event_data
 
 
 class TestBackController(unittest.TestCase):
@@ -10,67 +11,20 @@ class TestBackController(unittest.TestCase):
         self.controller = BackController()
 
     def test_create_bar_event(self):
-        event_data = {
-            'name': 'Test Bar Event',
-            'date': '2022-12-31',
-            'opening_time': '18:00',
-            'show_time': '20:00',
-            'location': 'Test Location',
-            'address': '123 Test Street',
-            'city': 'Test City',
-            'artists': ['Artist 1', 'Artist 2'],
-            'bar_profit': 1000,
-            'artist_payment': 500
-        }
-        self.controller.create_event('bar', **event_data)
-        self.assertIsInstance(self.controller.events[event_data['date']], BarEvent)
+        self.controller.create_event('bar', **bar_event_data)
+        self.assertIsInstance(self.controller.events[bar_event_data['date']], BarEvent)
 
     def test_create_theater_event(self):
-        event_data = {
-            'name': 'Test Theater Event',
-            'date': '2022-12-31',
-            'opening_time': '18:00',
-            'show_time': '20:00',
-            'location': 'Test Location',
-            'address': '123 Test Street',
-            'city': 'Test City',
-            'artists': ['Artist 1', 'Artist 2'],
-            'rental_cost': 2000
-        }
-        self.controller.create_event('theater', **event_data)
-        self.assertIsInstance(self.controller.events[event_data['date']], TheaterEvent)
+        self.controller.create_event('theater', **theater_event_data)
+        self.assertIsInstance(self.controller.events[theater_event_data['date']], TheaterEvent)
 
     def test_create_philanthropic_event(self):
-        event_data = {
-            'name': 'Test Philanthropic Event',
-            'date': '2022-12-31',
-            'opening_time': '18:00',
-            'show_time': '20:00',
-            'location': 'Test Location',
-            'address': '123 Test Street',
-            'city': 'Test City',
-            'artists': ['Artist 1', 'Artist 2'],
-            'sponsors': ['Sponsor 1', 'Sponsor 2'],
-            'sponsorship_amount': 3000
-        }
-        self.controller.create_event('philanthropic', **event_data)
-        self.assertIsInstance(self.controller.events[event_data['date']], PhilanthropicEvent)
+        self.controller.create_event('philanthropic', **philanthropic_event_data)
+        self.assertIsInstance(self.controller.events[philanthropic_event_data['date']], PhilanthropicEvent)
 
     def test_event_exists(self):
-        event_data = {
-            'name': 'Test Philanthropic Event',
-            'date': '2022-12-31',
-            'opening_time': '18:00',
-            'show_time': '20:00',
-            'location': 'Test Location',
-            'address': '123 Test Street',
-            'city': 'Test City',
-            'artists': ['Artist 1', 'Artist 2'],
-            'sponsors': ['Sponsor 1', 'Sponsor 2'],
-            'sponsorship_amount': 3000
-        }
-        self.controller.create_event('philanthropic', **event_data)
-        self.assertTrue(self.controller.event_exists(event_data['date']))
+        self.controller.create_event('philanthropic', **philanthropic_event_data)
+        self.assertTrue(self.controller.event_exists(philanthropic_event_data['date']))
 
     def test_event_does_not_exist(self):
         self.assertFalse(self.controller.event_exists('2022-12-31'))
@@ -91,39 +45,26 @@ class TestBackController(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.controller.create_event('philanthropic', **event_data)
 
+    """def test_get_events_by_type(self):
+        events = self.controller.events
+        print(f"Events: {events} {type(events)} {len(events)}")
+
+        # Verificar que todos los eventos devueltos son de tipo 'bar'
+
+        bar_events = self.controller.get_events_by_type('bar')
+        for event in bar_events:
+            self.assertIsInstance(event, BarEvent)
+
+        # Repetir para los otros tipos de eventos
+         theater_events = self.controller.get_events_by_type('theater')
+        for event in theater_events:
+            self.assertIsInstance(event, TheaterEvent)
+
+        philanthropic_events = self.controller.get_events_by_type('philanthropic')
+        for event in philanthropic_events:
+            self.assertIsInstance(event, PhilanthropicEvent)""" # FIX ME
+
 
 if __name__ == '__main__':
     unittest.main()
 
-"""    def test_create_event_with_existing_date(self):
-        event_data = {
-            'name': 'Test Event',
-            'date': '2022-12-31',
-            'opening_time': '18:00',
-            'show_time': '20:00',
-            'location': 'Test Location',
-            'address': '123 Test Street',
-            'city': 'Test City',
-            'artists': ['Artist 1', 'Artist 2'],
-            'sponsors': ['Sponsor 1', 'Sponsor 2'],
-            'sponsorship_amount': 3000
-        }
-        self.controller.create_event('philanthropic', **event_data)
-        with self.assertRaises(KeyError):
-            self.controller.create_event('philanthropic', **event_data)"""
-
-"""def test_create_event_with_unknown_type(self):
-    event_data = {
-        'name': 'Test Event',
-        'date': '2022-12-31',
-        'opening_time': '18:00',
-        'show_time': '20:00',
-        'location': 'Test Location',
-        'address': '123 Test Street',
-        'city': 'Test City',
-        'artists': ['Artist 1', 'Artist 2'],
-        'sponsors': ['Sponsor 1', 'Sponsor 2'],
-        'sponsorship_amount': 3000
-    }
-    with self.assertRaises(KeyError):
-        self.controller.create_event('unknown', **event_data)"""

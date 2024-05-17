@@ -84,3 +84,41 @@ PHILANTHROPIC_EVENT_FIELDS = {
     "sponsors": {"type": "text", "label": "Patrocinadores"},
     "sponsorship_amount": {"type": "number", "label": "Monto del patrocinio"},
 }
+
+bar_event_data = {
+    'name': 'Test Bar Event',
+    'date': '2022-12-31',
+    'opening_time': '18:00',
+    'show_time': '20:00',
+    'location': 'Test Location',
+    'address': '123 Test Street',
+    'city': 'Test City',
+    'artists': 'Artist 1',
+    'bar_profit': 1000,
+    'artist_payment': 500
+}
+
+theater_event_data = {
+    'name': 'Test Theater Event',
+    'date': '2022-12-31',
+    'opening_time': '18:00',
+    'show_time': '20:00',
+    'location': 'Test Location',
+    'address': '123 Test Street',
+    'city': 'Test City',
+    'artists': 'Artist 1',
+    'rental_cost': 2000
+}
+
+philanthropic_event_data = {
+    'name': 'Test Philanthropic Event',
+    'date': '2022-12-31',
+    'opening_time': '18:00',
+    'show_time': '20:00',
+    'location': 'Test Location',
+    'address': '123 Test Street',
+    'city': 'Test City',
+    'artists': 'Artist 1',
+    'sponsors': 'Sponsor 1',
+    'sponsorship_amount': 3000
+}

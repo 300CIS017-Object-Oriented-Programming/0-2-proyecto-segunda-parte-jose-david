@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock, call
 from controllers.gui_controller import GUIController
+from settings import bar_event_data, theater_event_data, philanthropic_event_data
 
 
 class TestGUIController(unittest.TestCase):
@@ -36,3 +37,5 @@ class TestGUIController(unittest.TestCase):
         # Verificar que el método event_exists del BackController se llamó dos veces con la misma fecha
         mock_back_controller.event_exists.assert_has_calls([call(event_data['date']), call(event_data['date'])])
         self.assertEqual(mock_back_controller.event_exists.call_count, 2)
+
+
