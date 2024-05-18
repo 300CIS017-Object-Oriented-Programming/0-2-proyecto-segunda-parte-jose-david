@@ -31,12 +31,13 @@ def draw_input_field(field, config):
         st.number_input(config["label"], key=field)
 
 
-def display_event(gui_controller, event, event_type):
+def display_event(gui_controller, event):
     # Convertir el objeto de evento en un diccionario de atributos
     event_dict = vars(event)
     # Obtener el diccionario de campos correspondiente al tipo de evento
-    event_fields = gui_controller.choose_event_fields(event_type)
+    event_fields = gui_controller.choose_event_fields(event.type)
     # Crear tres columnas
+    print(event.type)
     col1, col2, col3 = st.columns(3)
 
     # Dividir los campos en tres listas
@@ -80,4 +81,50 @@ def draw_events_library(gui_controller):
         else:
             for event in events:
                 with col1:
-                    display_event(gui_controller, event, event_type)
+                    display_event(gui_controller, event)
+
+
+def draw_edit_event_interface(gui_controller, searched_event):
+    # Obtener los campos del evento buscado
+    select_field_col, input_col = st.columns([1, 2])
+    event_fields = gui_controller.choose_event_fields(searched_event.type)
+
+    # Crear una lista de opciones para el selectbox
+    options = [field for field, _ in event_fields.items()]
+
+    # Crear el selectbox con las opciones
+    with select_field_col:
+        selected_field = st.selectbox("Seleccione el campo a editar", options)
+    with input_col:
+        with input_col:
+            # Crear un campo de entrada para el nuevo valor
+            new_value = draw_input_field_edit(selected_field, event_fields[selected_field])
+
+
+def draw_searched_event_interface(gui_controller, event_date_consult):
+    searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
+    if searched_event is not None:
+        display_event(gui_controller, searched_event)
+
+        empty, edit_event_button_col, delete_event_button_col, empty = st.columns([0.9, 1, 1, 1])
+
+        with edit_event_button_col:
+
+            if st.button("Editar evento"):
+                st.session_state.edit_event_interface = True
+
+        if st.session_state.edit_event_interface:
+            draw_edit_event_interface(gui_controller, searched_event)
+    else:
+        st.error("No se encontró ningún evento en la fecha seleccionada.")
+
+
+def draw_input_field_edit(field, config):
+    if config["type"] == "text":
+        return st.text_input("Nuevo valor")
+    elif config["type"] == "date":
+        return st.date_input("Nuevo valor")
+    elif config["type"] == "time":
+        return st.time_input("Nuevo valor")
+    elif config["type"] == "number":
+        return st.number_input("Nuevo valor")

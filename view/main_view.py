@@ -1,7 +1,8 @@
 import streamlit as st
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
-from view.event_view import draw_create_event_interface, display_event, draw_events_library
+from view.event_view import draw_create_event_interface, display_event, draw_events_library, \
+    draw_searched_event_interface
 
 
 def draw_option_menu(gui_controller):
@@ -31,6 +32,16 @@ def draw_home_page():
 
 
 def draw_event_manager_page(gui_controller):
+    # incializar variables de estado para manejar la busqueda y la biblioteca de eventos
+    if "create_event" not in st.session_state:
+        st.session_state.create_event = False
+    if "search_event" not in st.session_state:
+        st.session_state.search_event = False
+    if "show_event_library" not in st.session_state:
+        st.session_state.show_event_library = False
+    if "edit_event_interface" not in st.session_state:
+        st.session_state.edit_event_interface = False
+
     # Titulo de la página
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Gestor de eventos</div>", unsafe_allow_html=True)
@@ -43,28 +54,40 @@ def draw_event_manager_page(gui_controller):
         event_type = st.selectbox("Seleccione el tipo de evento", ["Seleccione...", "bar", "philanthropic", "theater"])
 
         # Elegir los campos del evento dependiendo del tipo de evento
-        event_fields = gui_controller.choose_event_fields(event_type)
 
-        # Si se ha seleccionado un tipo de evento, dibuja la interfaz de creación de eventos
-        if event_fields is not None and event_type != "Seleccione...":
-            draw_create_event_interface(gui_controller, event_type, event_fields)
+        if event_type != "Seleccione...":
+            st.session_state.create_event = True
+            event_fields = gui_controller.choose_event_fields(event_type)
 
+            # Si se ha seleccionado un tipo de evento, dibuja la interfaz de creación de eventos
+            if event_fields is not None and st.session_state.create_event:
+                draw_create_event_interface(gui_controller, event_type, event_fields)
+                # Cerrar las otras interfaces mientras se cree un evento (Generar un mejor felling al usuario)
+
+    # Consultar Editar o eliminar eventos
     st.subheader("Consultar evento")
     event_date_consult = st.date_input("Ingrese la fecha del evento a consultar")
-    if st.button("Buscar"):
-        searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
-        if searched_event is not None:
-            display_event(gui_controller, searched_event, event_type)
-        else:
-            st.error("No se encontró ningún evento en la fecha seleccionada.")
 
-    if "show_library" not in st.session_state:
-        st.session_state.show_library = False
+    # columnas para los botones de busqueda
+    search_button_col, out_search_button_col, empty_search_button_col = st.columns([0.3, 0.3, 3])
 
+    with search_button_col:
+        if st.button("Buscar"):
+            st.session_state.search_event = True
+
+        with out_search_button_col:
+            if st.button("cerrar"):
+                st.session_state.search_event = False
+                st.session_state.edit_event_interface = False
+
+    if st.session_state.search_event:
+        draw_searched_event_interface(gui_controller, event_date_consult)
+
+    # Biblioteca de eventos
     if st.button("Biblioteca de eventos"):
-        st.session_state.show_library = True
+        st.session_state.show_event_library = True
 
-    if st.session_state.show_library:
+    if st.session_state.show_event_library:
         draw_events_library(gui_controller)
 
 
