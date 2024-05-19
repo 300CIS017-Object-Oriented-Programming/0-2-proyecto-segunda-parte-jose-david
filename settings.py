@@ -47,44 +47,78 @@ document.addEventListener('DOMContentLoaded', set_title_color);
 </script>
 """
 
-
-
 BAR_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
-    "date": {"type": "date", "label": "Date"},
-    "opening_time": {"type": "time", "label": "Opening Time"},
-    "show_time": {"type": "time", "label": "Show Time"},
-    "location": {"type": "text", "label": "Location"},
-    "address": {"type": "text", "label": "Address"},
-    "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
-    "tickets": {"type": "number", "label": "Tickets"},
-    "bar_profit": {"type": "number", "label": "Bar Profit"},
-    "artist_payment": {"type": "number", "label": "Artist Payment"},
+    "name": {"type": "text", "label": "Nombre"},
+    "date": {"type": "date", "label": "Fecha"},
+    "opening_time": {"type": "time", "label": "Hora de apertura"},
+    "show_time": {"type": "time", "label": "Hora del espectáculo"},
+    "location": {"type": "text", "label": "Ubicación"},
+    "address": {"type": "text", "label": "Dirección"},
+    "city": {"type": "text", "label": "Ciudad"},
+    "artists": {"type": "text", "label": "Artistas"},
+    "bar_profit": {"type": "number", "label": "Ganancia del bar"},
+    "artist_payment": {"type": "number", "label": "Pago al artista"},
 }
 
 THEATER_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
-    "date": {"type": "date", "label": "Date"},
-    "opening_time": {"type": "time", "label": "Opening Time"},
-    "show_time": {"type": "time", "label": "Show Time"},
-    "location": {"type": "text", "label": "Location"},
-    "address": {"type": "text", "label": "Address"},
-    "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
-    "tickets": {"type": "number", "label": "Tickets"},
-    "rental_cost": {"type": "number", "label": "Rental Cost"},
+    "name": {"type": "text", "label": "Nombre"},
+    "date": {"type": "date", "label": "Fecha"},
+    "opening_time": {"type": "time", "label": "Hora de apertura"},
+    "show_time": {"type": "time", "label": "Hora del espectáculo"},
+    "location": {"type": "text", "label": "Ubicación"},
+    "address": {"type": "text", "label": "Dirección"},
+    "city": {"type": "text", "label": "Ciudad"},
+    "artists": {"type": "text", "label": "Artistas"},
+    "rental_cost": {"type": "number", "label": "Costo de alquiler"},
 }
 
 PHILANTHROPIC_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
-    "date": {"type": "date", "label": "Date"},
-    "opening_time": {"type": "time", "label": "Opening Time"},
-    "show_time": {"type": "time", "label": "Show Time"},
-    "location": {"type": "text", "label": "Location"},
-    "address": {"type": "text", "label": "Address"},
-    "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
-    "tickets": {"type": "number", "label": "Tickets"},
-    "donation_target": {"type": "number", "label": "Donation Target"},
+    "name": {"type": "text", "label": "Nombre"},
+    "date": {"type": "date", "label": "Fecha"},
+    "opening_time": {"type": "time", "label": "Hora de apertura"},
+    "show_time": {"type": "time", "label": "Hora del espectáculo"},
+    "location": {"type": "text", "label": "Ubicación"},
+    "address": {"type": "text", "label": "Dirección"},
+    "city": {"type": "text", "label": "Ciudad"},
+    "artists": {"type": "text", "label": "Artistas"},
+    "sponsors": {"type": "text", "label": "Patrocinadores"},
+    "sponsorship_amount": {"type": "number", "label": "Monto del patrocinio"},
+}
+
+bar_event_data = {
+    'name': 'Test Bar Event',
+    'date': '2022-12-31',
+    'opening_time': '18:00',
+    'show_time': '20:00',
+    'location': 'Test Location',
+    'address': '123 Test Street',
+    'city': 'Test City',
+    'artists': 'Artist 1',
+    'bar_profit': 1000,
+    'artist_payment': 500
+}
+
+theater_event_data = {
+    'name': 'Test Theater Event',
+    'date': '2022-12-31',
+    'opening_time': '18:00',
+    'show_time': '20:00',
+    'location': 'Test Location',
+    'address': '123 Test Street',
+    'city': 'Test City',
+    'artists': 'Artist 1',
+    'rental_cost': 2000
+}
+
+philanthropic_event_data = {
+    'name': 'Test Philanthropic Event',
+    'date': '2022-12-31',
+    'opening_time': '18:00',
+    'show_time': '20:00',
+    'location': 'Test Location',
+    'address': '123 Test Street',
+    'city': 'Test City',
+    'artists': 'Artist 1',
+    'sponsors': 'Sponsor 1',
+    'sponsorship_amount': 3000
 }
