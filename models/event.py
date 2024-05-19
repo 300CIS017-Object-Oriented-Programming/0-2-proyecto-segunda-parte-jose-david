@@ -1,3 +1,6 @@
+from models.ticket import Ticket
+
+
 class Event:
     """
     The Event class serves as a blueprint for creating Event objects in the application.
@@ -15,3 +18,4 @@ class Event:
         self.address = address
         self.city = city
         self.artists = artists
+        self.tickets = [None, None]  # The tickets associated with the event (presale,regular)

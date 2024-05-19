@@ -1,5 +1,7 @@
 class Ticket:
-    def __init__(self, price, reason_purchase):
+    def __init__(self, price, type_ticket):
         self.price = price
-        self.reason_purchase = reason_purchase
-    pass
+        self.type_ticket = type_ticket
+        # self.reason_purchase = " "
+
+

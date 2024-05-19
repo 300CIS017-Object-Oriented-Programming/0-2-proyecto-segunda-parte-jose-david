@@ -1,8 +1,9 @@
 import streamlit as st
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
-from view.event_view import draw_create_event_interface, display_event, draw_events_library, \
+from view.event_view import draw_create_event_interface, draw_events_library, \
     draw_searched_event_interface
+from view.ticket_office_view import draw_ticket_management_interface
 
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
 
@@ -67,7 +68,7 @@ def draw_event_manager_page(gui_controller):
 
             # If an event type has been selected, draw the event creation interface
             if event_fields is not None and st.session_state.create_event:
-                draw_create_event_interface(gui_controller, event_type, event_fields)
+                draw_create_event_interface(gui_controller, event_type, event_fields)  # event_view
 
                 # Close the other interfaces while creating an event (Generate a better feeling for the user)
     """Consult event, edit and delete events"""
@@ -88,7 +89,7 @@ def draw_event_manager_page(gui_controller):
                 st.session_state.delete_event_interface = False
 
     if st.session_state.search_event:
-        draw_searched_event_interface(gui_controller, event_date_consult)
+        draw_searched_event_interface(gui_controller, event_date_consult)  # view/event_view
 
     """Event library"""
     library_button_col, out_library_button_col, empty = st.columns([0.5, 0.5, 3])  # FIXME: change size
@@ -103,9 +104,35 @@ def draw_event_manager_page(gui_controller):
         draw_events_library(gui_controller)
 
 
-def draw_ticket_office_page():
+def draw_ticket_office_page(gui_controller):
+    """On this page the user can manage the ticketing of the events and the sales"""
+
+    # Initialize session state variables if they don't exist
+    if "ticket_management" not in st.session_state:
+        st.session_state.ticket_management = False
+    if "sales_management_tickets" not in st.session_state:
+        st.session_state.sales_management = False
+
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Gestor de boletería</div>", unsafe_allow_html=True)
+
+    """Tickets management"""
+
+    st.subheader("price of the tickets")
+    if st.button("Tickets management"):
+        st.session_state.ticket_management = True
+
+    if st.session_state.ticket_management:
+        draw_ticket_management_interface(gui_controller)  # view/ticket_office_view
+
+    st.subheader("Sales management")
+    if st.button("Sales management"):
+        st.session_state.sales_management = True
+
+    """Sales management"""
+
+    if st.session_state.sales_management:
+        pass  # Cambiar
 
 
 def draw_access_management_page():

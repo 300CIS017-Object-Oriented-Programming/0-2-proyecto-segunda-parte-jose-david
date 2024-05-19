@@ -7,12 +7,13 @@ from settings import BAR_EVENT_FIELDS, THEATER_EVENT_FIELDS, PHILANTHROPIC_EVENT
 
 class GUIController:
     """
-       The GUIController class is responsible for managing the user interface of the application.
-       It interacts with the BackController to handle the business logic and updates the interface accordingly.
+    The GUIController class is responsible for managing the user interface of the application.
+    It interacts with the BackController to handle the business logic and updates the interface accordingly.
     """
+
     def __init__(self):
         """
-            Initializes the GUIController with a BackController instance and the current page to be displayed.
+        Initializes the GUIController with a BackController instance and the current page to be displayed.
         """
         if 'my_state' not in st.session_state:
             self.back_controller = BackController()
@@ -24,7 +25,7 @@ class GUIController:
 
     def main(self):
         """
-            Main method that handles the navigation between different pages of the application.
+        Main method that handles the navigation between different pages of the application.
         """
         draw_option_menu(self)
         if self.run_page == 'home':
@@ -32,7 +33,7 @@ class GUIController:
         elif self.run_page == 'event_manager':
             draw_event_manager_page(self)
         elif self.run_page == 'ticket_office':
-            draw_ticket_office_page()
+            draw_ticket_office_page(self)
         elif self.run_page == 'access_management':
             draw_access_management_page()
         elif self.run_page == 'reports':
@@ -40,9 +41,9 @@ class GUIController:
 
     def create_event(self, event_type, event_data):
         """
-           Creates a new event of the specified type with the provided data.
-           It communicates with the BackController to create the event and displays a success or error message
-           based on the result.
+       Creates a new event of the specified type with the provided data.
+       It communicates with the BackController to create the event and displays a success or error message
+       based on the result.
        """
         if self.back_controller.event_exists(event_data['date']):
             st.error("Ya existe un evento en esa fecha")
@@ -50,11 +51,25 @@ class GUIController:
             self.back_controller.create_event(event_type, **event_data)
             st.success("Evento creado con éxito")
 
+    def choose_event_fields(self, event_type):
+        """
+        Returns the appropriate fields for the specified event type.
+        """
+        fields = None
+        if event_type == "bar":
+            fields = BAR_EVENT_FIELDS
+        elif event_type == "philanthropic":
+            fields = PHILANTHROPIC_EVENT_FIELDS
+        elif event_type == "theater":
+            fields = THEATER_EVENT_FIELDS
+
+        return fields
+
     def edit_event(self, event, new_value, field, ):
         """
-            Edits the specified field of an existing event with a new value.
-            It communicates with the BackController to edit the event and displays a success or error message
-            based on the result.
+        Edits the specified field of an existing event with a new value.
+        It communicates with the BackController to edit the event and displays a success or error message
+        based on the result.
         """
         current_value = getattr(event, field)
 
@@ -76,17 +91,3 @@ class GUIController:
         if not self.back_controller.event_exists(event.date):
             st.session_state.delete_event_interface = False
             st.experimental_rerun()
-
-    def choose_event_fields(self, event_type):
-        """
-        Returns the appropriate fields for the specified event type.
-        """
-        fields = None
-        if event_type == "bar":
-            fields = BAR_EVENT_FIELDS
-        elif event_type == "philanthropic":
-            fields = PHILANTHROPIC_EVENT_FIELDS
-        elif event_type == "theater":
-            fields = THEATER_EVENT_FIELDS
-
-        return fields
