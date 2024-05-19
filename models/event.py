@@ -1,4 +1,10 @@
 class Event:
+    """
+    The Event class serves as a blueprint for creating Event objects in the application.
+    It encapsulates the common attributes and behaviors of an event, such as its name, date,
+    opening time, show time, location, address, city, and artists.
+    """
+
     def __init__(self, name, date, opening_time, show_time, location, address, city, artists):
         self.type = ''
         self.name = name
@@ -9,5 +15,3 @@ class Event:
         self.address = address
         self.city = city
         self.artists = artists
-
-

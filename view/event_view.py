@@ -1,26 +1,35 @@
+# Importing the required library
 import streamlit as st
 
 
+# Function to draw the interface for creating an event
 def draw_create_event_interface(gui_controller, event_type, event_fields):
-    print(f"event type create {event_type}")
+
+    # Creating a form for the event
     with st.form(key=f'{event_type}_form'):
+        # Creating two columns for the form
         col1, col2 = st.columns(2)
+        # Splitting the event fields into two halves
         half = len(event_fields) // 2
         fields = list(event_fields.items())
+        # Displaying the first half of the fields in the first column
         for i in range(half):
             field, config = fields[i]
             with col1:
                 draw_input_field(field, config)
+        # Displaying the second half of the fields in the second column
         for i in range(half, len(fields)):
             field, config = fields[i]
             with col2:
                 draw_input_field(field, config)
 
+        # If the form is submitted, create the event with the entered data
         if st.form_submit_button('Enviar'):
             event_data = {field: st.session_state[field] for field, _ in event_fields.items()}
             gui_controller.create_event(event_type, event_data)
 
 
+# Function to draw the input field based on its type
 def draw_input_field(field, config):
     if config["type"] == "text":
         st.text_input(config["label"], key=field)
@@ -32,23 +41,24 @@ def draw_input_field(field, config):
         st.number_input(config["label"], key=field)
 
 
+# Function to display an event
 def display_event(gui_controller, event):
-    # Convertir el objeto de evento en un diccionario de atributos
+    # Converting the event object into a dictionary of attributes
     event_dict = vars(event)
 
-    # Obtener el diccionario de campos correspondiente al tipo de evento
+    # Getting the dictionary of fields corresponding to the event type
     event_fields = gui_controller.choose_event_fields(event.type)
-    # Crear tres columnas
+    # Creating three columns
     col1, col2, col3 = st.columns(3)
 
-    # Dividir los campos en tres listas
+    # Splitting the fields into three lists
     fields = list(event_fields.items())
     third = len(fields) // 3
     fields1 = fields[:third]
     fields2 = fields[third:2 * third]
     fields3 = fields[2 * third:]
 
-    # Mostrar los campos en las tres columnas
+    # Displaying the fields in the three columns
     for field, config in fields1:
         with col1:
             st.write(f"{config['label']}: {event_dict.get(field, '')}")
@@ -60,31 +70,31 @@ def display_event(gui_controller, event):
             st.write(f"{config['label']}: {event_dict.get(field, '')}")
 
 
+# Function to draw the events library
 def draw_events_library(gui_controller):
-    # Crear un select box para seleccionar el tipo de evento
+    # Creating a select box to select the event type
     col0, col1 = st.columns([0.5, 2.5])
     with col0:
-
         event_type = st.selectbox("Filtrar por tipo de evento", ["Seleccione...", "bar", "philanthropic", "theater"])
 
-    # Si se ha seleccionado un tipo de evento
-
+    # If an event type has been selected
     if event_type != "Seleccione...":
-        # Obtener todos los eventos de este tipo
+        # Getting all the events of this type
         events = gui_controller.back_controller.get_events_by_type(event_type)
 
-        # Si no hay eventos de este tipo, mostrar un mensaje
+        # If there are no events of this type, display a message
         if events is None:
             with col0:
                 st.info(f"aun no hay eventos de tipo {event_type}.")
 
-            # Para cada evento, mostrarlo en una nueva columna
+            # For each event, display it in a new column
         else:
             for event in events:
                 with col1:
                     display_event(gui_controller, event)
 
 
+# Function to draw the interface for the searched event
 def draw_searched_event_interface(gui_controller, event_date_consult):
     searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
     if searched_event is not None:
@@ -93,7 +103,6 @@ def draw_searched_event_interface(gui_controller, event_date_consult):
         empty, edit_event_button_col, delete_event_button_col, empty = st.columns([0.9, 1, 1, 1])
 
         with edit_event_button_col:
-
             if st.button("Editar evento"):
                 st.session_state.edit_event_interface = True
         with delete_event_button_col:
@@ -108,21 +117,22 @@ def draw_searched_event_interface(gui_controller, event_date_consult):
         st.error("No se encontró ningún evento en la fecha seleccionada.")
 
 
+# Function to draw the interface for editing an event
 def draw_edit_event_interface(gui_controller, searched_event):
-    # Obtener los campos del evento buscado
+    # Getting the fields of the searched event
     select_field_col, input_col, apply_button_col = st.columns([1, 1.5, 1.5])
     event_fields = gui_controller.choose_event_fields(searched_event.type)
 
-    # Crear una lista de opciones para el selectbox
+    # Creating a list of options for the selectbox
     options = [field for field, _ in event_fields.items()]
 
-    # Crear el selectbox con las opciones
+    # Creating the selectbox with the options
     with select_field_col:
         selected_field = st.selectbox("Seleccione el campo a editar", options)
 
     with input_col:
         with input_col:
-            # Crear un campo de entrada para el nuevo valor
+            # Creating an input field for the new value
             new_value = draw_input_field_edit(selected_field, event_fields[selected_field])
             st.info("Oprima buscar de nuevo para notar los cambios")
         with apply_button_col:
@@ -135,6 +145,7 @@ def draw_edit_event_interface(gui_controller, searched_event):
                     st.warning("Por favor ingrese un valor válido")
 
 
+# Function to draw the interface for deleting an event
 def draw_delete_event_interface(gui_controller, searched_event):
     st.warning("¿Está seguro que desea eliminar este evento?")
     empty, yes_button_col, no_button_col, empty = st.columns([1.5, 0.7, 0.7, 2])
@@ -148,6 +159,7 @@ def draw_delete_event_interface(gui_controller, searched_event):
             st.experimental_rerun()
 
 
+# Function to draw the input field for editing an event based on its type
 def draw_input_field_edit(field, config):
     if config["type"] == "text":
         return st.text_input("Nuevo valor")

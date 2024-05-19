@@ -6,7 +6,14 @@ from settings import BAR_EVENT_FIELDS, THEATER_EVENT_FIELDS, PHILANTHROPIC_EVENT
 
 
 class GUIController:
+    """
+       The GUIController class is responsible for managing the user interface of the application.
+       It interacts with the BackController to handle the business logic and updates the interface accordingly.
+    """
     def __init__(self):
+        """
+            Initializes the GUIController with a BackController instance and the current page to be displayed.
+        """
         if 'my_state' not in st.session_state:
             self.back_controller = BackController()
             self.run_page = 'home'
@@ -16,7 +23,10 @@ class GUIController:
             self.run_page = st.session_state.my_state.run_page
 
     def main(self):
-        draw_option_menu(self)  # Menu de opciones siempre abierto sin necesitar condicional
+        """
+            Main method that handles the navigation between different pages of the application.
+        """
+        draw_option_menu(self)
         if self.run_page == 'home':
             draw_home_page()
         elif self.run_page == 'event_manager':
@@ -29,6 +39,11 @@ class GUIController:
             draw_reports_page()
 
     def create_event(self, event_type, event_data):
+        """
+           Creates a new event of the specified type with the provided data.
+           It communicates with the BackController to create the event and displays a success or error message
+           based on the result.
+       """
         if self.back_controller.event_exists(event_data['date']):
             st.error("Ya existe un evento en esa fecha")
         else:
@@ -36,10 +51,11 @@ class GUIController:
             st.success("Evento creado con éxito")
 
     def edit_event(self, event, new_value, field, ):
-
-        """Edicion del evento seleccionado, hace las verificaciones y se comunica con el usuario, en caso de
-           no tener problemas entonces usa el controlador del back para editar el evento."""
-
+        """
+            Edits the specified field of an existing event with a new value.
+            It communicates with the BackController to edit the event and displays a success or error message
+            based on the result.
+        """
         current_value = getattr(event, field)
 
         if new_value == current_value:
@@ -51,8 +67,10 @@ class GUIController:
             st.success("Evento editado con éxito")
 
     def delete_event(self, event):
-        """Eliminación del evento seleccionado, hace las verificaciones y se comunica con el usuario, en caso de
-           no tener problemas entonces usa el controlador del back para eliminar el evento."""
+        """
+        Deletes the specified event.
+        It communicates with the BackController to delete the event and updates the interface accordingly.
+        """
 
         self.back_controller.delete_event(event)
         if not self.back_controller.event_exists(event.date):
@@ -60,6 +78,9 @@ class GUIController:
             st.experimental_rerun()
 
     def choose_event_fields(self, event_type):
+        """
+        Returns the appropriate fields for the specified event type.
+        """
         fields = None
         if event_type == "bar":
             fields = BAR_EVENT_FIELDS
