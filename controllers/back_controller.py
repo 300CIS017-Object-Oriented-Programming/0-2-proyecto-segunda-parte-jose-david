@@ -17,12 +17,13 @@ class BackController:
             self.events[event_data['date']].type = 'bar'
         elif event_type == "theater":
             self.events[event_data['date']] = TheaterEvent(**event_data)
-            self.events[event_data['date']].type = 'philanthropic'
+            self.events[event_data['date']].type = 'theater'
         elif event_type == "philanthropic":
             self.events[event_data['date']] = PhilanthropicEvent(**event_data)
-            self.events[event_data['date']].type = 'theater'
+            self.events[event_data['date']].type = 'philanthropic'
 
-
+    def delete_event(self, event):
+        del self.events[event.date]
 
     def get_event_by_date(self, date):
         return self.events.get(date, None)

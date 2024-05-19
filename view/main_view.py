@@ -41,6 +41,9 @@ def draw_event_manager_page(gui_controller):
         st.session_state.show_event_library = False
     if "edit_event_interface" not in st.session_state:
         st.session_state.edit_event_interface = False
+    if "delete_event_interface" not in st.session_state:
+        st.session_state.delete_event_interface = False
+
 
     # Titulo de la página
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
@@ -82,6 +85,7 @@ def draw_event_manager_page(gui_controller):
             if st.button("cerrar"):  # FIXME: cambiar a un icono de X
                 st.session_state.search_event = False
                 st.session_state.edit_event_interface = False
+                st.session_state.delete_event_interface = False
 
     if st.session_state.search_event:
         draw_searched_event_interface(gui_controller, event_date_consult)

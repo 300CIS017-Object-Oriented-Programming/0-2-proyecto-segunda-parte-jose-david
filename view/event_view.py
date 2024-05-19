@@ -2,6 +2,7 @@ import streamlit as st
 
 
 def draw_create_event_interface(gui_controller, event_type, event_fields):
+    print(f"event type create {event_type}")
     with st.form(key=f'{event_type}_form'):
         col1, col2 = st.columns(2)
         half = len(event_fields) // 2
@@ -20,8 +21,6 @@ def draw_create_event_interface(gui_controller, event_type, event_fields):
             gui_controller.create_event(event_type, event_data)
 
 
-
-
 def draw_input_field(field, config):
     if config["type"] == "text":
         st.text_input(config["label"], key=field)
@@ -36,6 +35,7 @@ def draw_input_field(field, config):
 def display_event(gui_controller, event):
     # Convertir el objeto de evento en un diccionario de atributos
     event_dict = vars(event)
+
     # Obtener el diccionario de campos correspondiente al tipo de evento
     event_fields = gui_controller.choose_event_fields(event.type)
     # Crear tres columnas
@@ -85,6 +85,29 @@ def draw_events_library(gui_controller):
                     display_event(gui_controller, event)
 
 
+def draw_searched_event_interface(gui_controller, event_date_consult):
+    searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
+    if searched_event is not None:
+        display_event(gui_controller, searched_event)
+
+        empty, edit_event_button_col, delete_event_button_col, empty = st.columns([0.9, 1, 1, 1])
+
+        with edit_event_button_col:
+
+            if st.button("Editar evento"):
+                st.session_state.edit_event_interface = True
+        with delete_event_button_col:
+            if st.button("Eliminar evento"):
+                st.session_state.delete_event_interface = True
+
+        if st.session_state.edit_event_interface:
+            draw_edit_event_interface(gui_controller, searched_event)
+        if st.session_state.delete_event_interface:
+            draw_delete_event_interface(gui_controller, searched_event)
+    else:
+        st.error("No se encontró ningún evento en la fecha seleccionada.")
+
+
 def draw_edit_event_interface(gui_controller, searched_event):
     # Obtener los campos del evento buscado
     select_field_col, input_col, apply_button_col = st.columns([1, 1.5, 1.5])
@@ -112,22 +135,17 @@ def draw_edit_event_interface(gui_controller, searched_event):
                     st.warning("Por favor ingrese un valor válido")
 
 
-def draw_searched_event_interface(gui_controller, event_date_consult):
-    searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
-    if searched_event is not None:
-        display_event(gui_controller, searched_event)
+def draw_delete_event_interface(gui_controller, searched_event):
+    st.warning("¿Está seguro que desea eliminar este evento?")
+    empty, yes_button_col, no_button_col, empty = st.columns([1.5, 0.7, 0.7, 2])
+    with yes_button_col:
+        if st.button("Confirmar"):
+            gui_controller.delete_event(searched_event)
 
-        empty, edit_event_button_col, delete_event_button_col, empty = st.columns([0.9, 1, 1, 1])
-
-        with edit_event_button_col:
-
-            if st.button("Editar evento"):
-                st.session_state.edit_event_interface = True
-
-        if st.session_state.edit_event_interface:
-            draw_edit_event_interface(gui_controller, searched_event)
-    else:
-        st.error("No se encontró ningún evento en la fecha seleccionada.")
+    with no_button_col:
+        if st.button("Cerrar"):
+            st.session_state.delete_event_interface = False
+            st.experimental_rerun()
 
 
 def draw_input_field_edit(field, config):

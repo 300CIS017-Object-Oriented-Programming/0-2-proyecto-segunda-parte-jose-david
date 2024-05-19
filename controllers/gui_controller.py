@@ -50,6 +50,15 @@ class GUIController:
             setattr(event, field, new_value)
             st.success("Evento editado con éxito")
 
+    def delete_event(self, event):
+        """Eliminación del evento seleccionado, hace las verificaciones y se comunica con el usuario, en caso de
+           no tener problemas entonces usa el controlador del back para eliminar el evento."""
+
+        self.back_controller.delete_event(event)
+        if not self.back_controller.event_exists(event.date):
+            st.session_state.delete_event_interface = False
+            st.experimental_rerun()
+
     def choose_event_fields(self, event_type):
         fields = None
         if event_type == "bar":
