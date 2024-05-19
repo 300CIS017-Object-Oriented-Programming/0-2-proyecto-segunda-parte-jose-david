@@ -46,7 +46,8 @@ def draw_event_manager_page(gui_controller):
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Gestor de eventos</div>", unsafe_allow_html=True)
 
-    # Creacion de eventos
+    """ Crear eventos """
+
     st.subheader("Crear Evento")
     empty_col1, col1, empty_col2 = st.columns([0.9, 2.5, 1])
 
@@ -62,30 +63,38 @@ def draw_event_manager_page(gui_controller):
             # Si se ha seleccionado un tipo de evento, dibuja la interfaz de creación de eventos
             if event_fields is not None and st.session_state.create_event:
                 draw_create_event_interface(gui_controller, event_type, event_fields)
+
                 # Cerrar las otras interfaces mientras se cree un evento (Generar un mejor felling al usuario)
 
-    # Consultar Editar o eliminar eventos
+    """Consultar evento, editar y eliminar eventos"""
+
     st.subheader("Consultar evento")
     event_date_consult = st.date_input("Ingrese la fecha del evento a consultar")
 
     # columnas para los botones de busqueda
-    search_button_col, out_search_button_col, empty_search_button_col = st.columns([0.3, 0.3, 3])
+    search_button_col, out_search_button_col, empty = st.columns([0.3, 0.3, 3])
 
     with search_button_col:
         if st.button("Buscar"):
             st.session_state.search_event = True
 
         with out_search_button_col:
-            if st.button("cerrar"):
+            if st.button("cerrar"):  # FIXME: cambiar a un icono de X
                 st.session_state.search_event = False
                 st.session_state.edit_event_interface = False
 
     if st.session_state.search_event:
         draw_searched_event_interface(gui_controller, event_date_consult)
 
-    # Biblioteca de eventos
-    if st.button("Biblioteca de eventos"):
-        st.session_state.show_event_library = True
+    """Biblioteca de eventos"""
+
+    library_button_col, out_library_button_col, empty = st.columns([0.5, 0.5, 3])  # FIXME: cambiar tamanio
+    with library_button_col:
+        if st.button("Biblioteca de eventos"):
+            st.session_state.show_event_library = True
+    with out_library_button_col:
+        if st.button("Cerrar biblioteca"):  # FIXME: cambiar a un icono de X
+            st.session_state.show_event_library = False
 
     if st.session_state.show_event_library:
         draw_events_library(gui_controller)

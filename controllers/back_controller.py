@@ -22,6 +22,8 @@ class BackController:
             self.events[event_data['date']] = PhilanthropicEvent(**event_data)
             self.events[event_data['date']].type = 'theater'
 
+
+
     def get_event_by_date(self, date):
         return self.events.get(date, None)
 

@@ -35,6 +35,21 @@ class GUIController:
             self.back_controller.create_event(event_type, **event_data)
             st.success("Evento creado con éxito")
 
+    def edit_event(self, event, new_value, field, ):
+
+        """Edicion del evento seleccionado, hace las verificaciones y se comunica con el usuario, en caso de
+           no tener problemas entonces usa el controlador del back para editar el evento."""
+
+        current_value = getattr(event, field)
+
+        if new_value == current_value:
+            st.warning("El nuevo valor es igual al valor actual. No se realizó ningún cambio.")
+        elif field == "date" and self.back_controller.event_exists(new_value):
+            st.error("Ya existe un evento en esa fecha")
+        else:
+            setattr(event, field, new_value)
+            st.success("Evento editado con éxito")
+
     def choose_event_fields(self, event_type):
         fields = None
         if event_type == "bar":

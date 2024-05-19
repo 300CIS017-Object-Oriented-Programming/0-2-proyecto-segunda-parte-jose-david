@@ -20,6 +20,8 @@ def draw_create_event_interface(gui_controller, event_type, event_fields):
             gui_controller.create_event(event_type, event_data)
 
 
+
+
 def draw_input_field(field, config):
     if config["type"] == "text":
         st.text_input(config["label"], key=field)
@@ -37,7 +39,6 @@ def display_event(gui_controller, event):
     # Obtener el diccionario de campos correspondiente al tipo de evento
     event_fields = gui_controller.choose_event_fields(event.type)
     # Crear tres columnas
-    print(event.type)
     col1, col2, col3 = st.columns(3)
 
     # Dividir los campos en tres listas
@@ -86,7 +87,7 @@ def draw_events_library(gui_controller):
 
 def draw_edit_event_interface(gui_controller, searched_event):
     # Obtener los campos del evento buscado
-    select_field_col, input_col = st.columns([1, 2])
+    select_field_col, input_col, apply_button_col = st.columns([1, 1.5, 1.5])
     event_fields = gui_controller.choose_event_fields(searched_event.type)
 
     # Crear una lista de opciones para el selectbox
@@ -95,10 +96,20 @@ def draw_edit_event_interface(gui_controller, searched_event):
     # Crear el selectbox con las opciones
     with select_field_col:
         selected_field = st.selectbox("Seleccione el campo a editar", options)
+
     with input_col:
         with input_col:
             # Crear un campo de entrada para el nuevo valor
             new_value = draw_input_field_edit(selected_field, event_fields[selected_field])
+            st.info("Oprima buscar de nuevo para notar los cambios")
+        with apply_button_col:
+            st.write("")
+            st.write("")
+            if st.button("Aplicar cambios"):
+                if new_value is not None and new_value != "":
+                    gui_controller.edit_event(searched_event, new_value, selected_field)
+                else:
+                    st.warning("Por favor ingrese un valor válido")
 
 
 def draw_searched_event_interface(gui_controller, event_date_consult):
