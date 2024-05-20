@@ -1,8 +1,9 @@
 import streamlit as st
 
+""" Ticket management interface """
+
 
 def draw_ticket_management_interface(gui_controller):
-
     # Initialize session state variables if they don't exist
     if "edit_ticket" not in st.session_state:
         st.session_state.edit_ticket = False
@@ -34,7 +35,6 @@ def draw_ticket_management_interface(gui_controller):
 
 def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_edit_ticket,
                                        search_event_col, type_event_col):
-
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_edit_ticket)
 
     if ticket is not None:
@@ -68,7 +68,6 @@ def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_edi
 
 
 def draw_edit_price_ticket_interface(gui_controller, event_to_edit_ticket, ticket_type):
-
     empty, price_input_col, empty = st.columns([0.9, 2.5, 1])
     with price_input_col:
         new_price = st.number_input("Enter the new price of the ticket")
@@ -91,3 +90,10 @@ def draw_edit_price_ticket_interface(gui_controller, event_to_edit_ticket, ticke
         if st.button("Cancel"):
             st.session_state.edit_ticket = False
             st.rerun()
+
+
+""" Sales management interface """
+
+
+def draw_sales_tickets_manager_interface(gui_controller):
+    pass

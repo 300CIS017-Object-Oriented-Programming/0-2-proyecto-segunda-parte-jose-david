@@ -9,9 +9,9 @@ class PhilanthropicEvent(Event):
         like sponsors and sponsorship amount.
     """
 
-    def __init__(self, name, date, opening_time, show_time, location, address, city, artists, sponsors,
+    def __init__(self, name, date, opening_time, show_time, location, address, city, artists, capacity, sponsors,
                  sponsorship_amount):
-        super().__init__(name, date, opening_time, show_time, location, address, city, artists)
+        super().__init__(name, date, opening_time, show_time, location, address, city, artists, capacity)
         self.sponsors = sponsors
         self.sponsorship_amount = sponsorship_amount
 

@@ -48,41 +48,44 @@ document.addEventListener('DOMContentLoaded', set_title_color);
 """
 
 BAR_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Nombre"},
-    "date": {"type": "date", "label": "Fecha"},
-    "opening_time": {"type": "time", "label": "Hora de apertura"},
-    "show_time": {"type": "time", "label": "Hora del espectáculo"},
-    "location": {"type": "text", "label": "Ubicación"},
-    "address": {"type": "text", "label": "Dirección"},
-    "city": {"type": "text", "label": "Ciudad"},
-    "artists": {"type": "text", "label": "Artistas"},
-    "bar_profit": {"type": "number", "label": "Ganancia del bar"},
-    "artist_payment": {"type": "number", "label": "Pago al artista"},
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists"},
+    "capacity": {"type": "number", "label": "Capacity"},
+    "bar_profit": {"type": "number", "label": "Bar Profit"},
+    "artist_payment": {"type": "number", "label": "Artist Payment"},
 }
 
 THEATER_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Nombre"},
-    "date": {"type": "date", "label": "Fecha"},
-    "opening_time": {"type": "time", "label": "Hora de apertura"},
-    "show_time": {"type": "time", "label": "Hora del espectáculo"},
-    "location": {"type": "text", "label": "Ubicación"},
-    "address": {"type": "text", "label": "Dirección"},
-    "city": {"type": "text", "label": "Ciudad"},
-    "artists": {"type": "text", "label": "Artistas"},
-    "rental_cost": {"type": "number", "label": "Costo de alquiler"},
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists"},
+    "capacity": {"type": "number", "label": "Capacity"},
+    "rental_cost": {"type": "number", "label": "Rental Cost"},
 }
 
 PHILANTHROPIC_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Nombre"},
-    "date": {"type": "date", "label": "Fecha"},
-    "opening_time": {"type": "time", "label": "Hora de apertura"},
-    "show_time": {"type": "time", "label": "Hora del espectáculo"},
-    "location": {"type": "text", "label": "Ubicación"},
-    "address": {"type": "text", "label": "Dirección"},
-    "city": {"type": "text", "label": "Ciudad"},
-    "artists": {"type": "text", "label": "Artistas"},
-    "sponsors": {"type": "text", "label": "Patrocinadores"},
-    "sponsorship_amount": {"type": "number", "label": "Monto del patrocinio"},
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists"},
+    "capacity": {"type": "number", "label": "Capacity"},
+    "sponsors": {"type": "text", "label": "Sponsors"},
+    "sponsorship_amount": {"type": "number", "label": "Sponsorship Amount"},
 }
 
 bar_event_data = {
@@ -94,8 +97,10 @@ bar_event_data = {
     'address': '123 Test Street',
     'city': 'Test City',
     'artists': 'Artist 1',
+    'capacity': 100,
     'bar_profit': 1000,
     'artist_payment': 500
+
 }
 
 theater_event_data = {
@@ -107,6 +112,7 @@ theater_event_data = {
     'address': '123 Test Street',
     'city': 'Test City',
     'artists': 'Artist 1',
+    'capacity': 100,
     'rental_cost': 2000
 }
 
@@ -119,6 +125,7 @@ philanthropic_event_data = {
     'address': '123 Test Street',
     'city': 'Test City',
     'artists': 'Artist 1',
+    'capacity': 100,
     'sponsors': 'Sponsor 1',
     'sponsorship_amount': 3000
 }

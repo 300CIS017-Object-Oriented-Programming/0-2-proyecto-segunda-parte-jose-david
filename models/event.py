@@ -8,8 +8,8 @@ class Event:
     opening time, show time, location, address, city, and artists.
     """
 
-    def __init__(self, name, date, opening_time, show_time, location, address, city, artists):
-        self.type = ''
+    def __init__(self, name, date, opening_time, show_time, location, address, city, artists, capacity):
+        self.type = ''  # The type of event (philanthropic, theater, bar)
         self.name = name
         self.date = date
         self.opening_time = opening_time
@@ -18,4 +18,5 @@ class Event:
         self.address = address
         self.city = city
         self.artists = artists
+        self.capacity = capacity  # The maximum capacity of the event
         self.tickets = [None, None]  # The tickets associated with the event (presale,regular)
