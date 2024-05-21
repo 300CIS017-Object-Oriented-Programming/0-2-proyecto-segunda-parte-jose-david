@@ -3,7 +3,7 @@ from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
 from view.event_view import draw_create_event_interface, draw_events_library, \
     draw_searched_event_interface
-from view.ticket_office_view import draw_ticket_management_interface
+from view.ticket_office_view import draw_ticket_management_interface, draw_ticket_sales_management_interface
 
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
 
@@ -110,13 +110,13 @@ def draw_ticket_office_page(gui_controller):
     # Initialize session state variables if they don't exist
     if "ticket_management" not in st.session_state:
         st.session_state.ticket_management = False
-    if "sales_management_tickets" not in st.session_state:
-        st.session_state.sales_management = False
+    if "ticket_sale_management" not in st.session_state:
+        st.session_state.ticket_sale_management = False
 
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Gestor de boletería</div>", unsafe_allow_html=True)
 
-    """Tickets management"""
+    """ Tickets management """
 
     st.subheader("price of the tickets")
     if st.button("Tickets management"):
@@ -125,14 +125,14 @@ def draw_ticket_office_page(gui_controller):
     if st.session_state.ticket_management:
         draw_ticket_management_interface(gui_controller)  # view/ticket_office_view
 
+    """ Ticket sales manager """
+
     st.subheader("Sales management")
     if st.button("Sales management"):
-        st.session_state.sales_management = True
+        st.session_state.ticket_sale_management = True
 
-    """Sales management"""
-
-    if st.session_state.sales_management:
-        pass  # Cambiar
+    if st.session_state.ticket_sale_management:
+        draw_ticket_sales_management_interface(gui_controller)  # view/ticket_office_view
 
 
 def draw_access_management_page():

@@ -3,7 +3,7 @@ from controllers.back_controller import BackController
 from view.main_view import draw_option_menu, draw_home_page, draw_event_manager_page, draw_ticket_office_page, \
     draw_access_management_page, draw_reports_page
 from settings import BAR_EVENT_FIELDS, THEATER_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS
-
+import webbrowser
 
 class GUIController:
     """
@@ -90,4 +90,24 @@ class GUIController:
         self.back_controller.delete_event(event)
         if not self.back_controller.event_exists(event.date):
             st.session_state.delete_event_interface = False
-            st.experimental_rerun()
+            st.rerun()
+
+    def ticket_sale(self, event, ticket_type, buyer_name, buyer_id):
+
+        if buyer_name.strip() is "" or buyer_id.strip() is "":  # .strip use for remove white spaces
+            st.warning("Please, complete all the fields")
+
+        else:
+            print(f"len event sold { len(event.sold_tickets)}, capacity {event.capacity}")
+            if len(event.sold_tickets) < int(event.capacity):
+
+                ticket_sold = self.back_controller.create_sold_ticket(event, ticket_type, buyer_name, buyer_id)
+                self.back_controller.add_sold_ticket_to_event(event, ticket_sold)
+
+                if self.back_controller.verify_sold_ticket(event, ticket_sold.buyer_id):
+                    st.success("sale completed successfully")
+                self.back_controller.generate_ticket_pdf(event, buyer_name, buyer_id, f"{buyer_id}.pdf")
+                # Abrir el PDF en el navegador web
+                webbrowser.open_new(f"{buyer_id}.pdf")
+            else:
+                st.error("The event is full")

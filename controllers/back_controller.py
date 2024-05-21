@@ -2,6 +2,10 @@ from models.bar_event import BarEvent
 from models.philanthropic_event import PhilanthropicEvent
 from models.theater_event import TheaterEvent
 from models.ticket import Ticket
+from models.ticket_sold import TicketSold
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib.colors import lightblue
 
 
 class BackController:
@@ -100,3 +104,76 @@ class BackController:
 
         return valid_price
 
+    def generate_ticket_pdf(self, event, buyer_name, buyer_id, filename):
+        c = canvas.Canvas(filename, pagesize=letter)
+
+        # Dibujar un rectángulo como margen
+        # Los parámetros son: x, y, ancho, alto
+        c.setStrokeColor(lightblue)
+        c.rect(50, 50, 500, 670)
+
+        # Añadir texto al PDF
+        c.setFont("Courier", 30)
+        c.drawString(150, 750, "Humor Hub Tickets")
+
+        c.setFont("Times-Roman", 8)
+        c.drawString(120, 680, "Comprador: ")
+        c.drawString(120, 660, "ID: ")
+        c.drawString(120, 640, "Evento: ")
+        c.drawString(120, 620, "Fecha: ")
+        c.drawString(220, 620, "Artistas: ")
+        c.drawString(120, 600, "Hora de apertura\nde puertas: ")
+        c.drawString(120, 595, "de puertas: ")
+        c.drawString(220, 600, "Hora del show: ")
+        c.drawString(120, 560, "Ubicación: ")
+        c.drawString(220, 560, "Ciudad: ")
+        c.drawString(320, 560, "Dirección: ")
+
+        c.setFont("Times-Bold", 8)
+        c.drawString(180, 680, f"{buyer_name}")
+        c.drawString(180, 660, f"{buyer_id}")
+        c.drawString(180, 640, f" {event.name}")
+        c.drawString(180, 620, f" {event.date}")
+        c.drawString(280, 620, f" {event.opening_time}")
+        c.drawString(180, 600, f" {event.show_time}")
+        c.drawString(280, 600, f" {event.location}")
+        c.drawString(180, 560, f" {event.city}")
+        c.drawString(280, 560, f" {event.address}")
+        c.drawString(380, 560, f" {event.artists}")
+
+        # Agregar la imagen
+        # c.drawImage("ruta/a/la/imagen.jpg", x, y, ancho, alto)
+
+        # Dibujar un segundo rectángulo como margen
+        c.setStrokeColor(lightblue)
+        c.rect(50, 50, 500, 400)
+
+        c.setFont("Helvetica", 16)
+        c.drawString(80, 380, "IMPORTANTE")
+
+        # Aquí puedes agregar el texto importante
+
+        # Finalizar y guardar el PDF
+        c.save()
+
+    def create_sold_ticket(self, event, ticket_type, buyer_name, buyer_id):
+        """
+        Creates a new sold ticket for the specified event and ticket type.
+        """
+        ticket = self.get_event_ticket(ticket_type, event)
+        sold_ticket = TicketSold(ticket_type, buyer_name, buyer_id)
+        print(f"dentro back create {sold_ticket.buyer_id}")
+        return sold_ticket
+
+    def add_sold_ticket_to_event(self, event, sold_ticket):
+        """
+        Adds a sold ticket to the event's sold tickets dictionary.
+        """
+        print(f"dentro back {sold_ticket.buyer_id}")
+        event.sold_tickets[sold_ticket.buyer_id] = sold_ticket
+
+    def verify_sold_ticket(self, event, buyer_id):
+        """
+        Verifies if a ticket has been sold to the buyer with the specified ID.
+        """
+        return buyer_id in event.sold_tickets

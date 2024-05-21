@@ -20,3 +20,5 @@ class Event:
         self.artists = artists
         self.capacity = capacity  # The maximum capacity of the event
         self.tickets = [None, None]  # The tickets associated with the event (presale,regular)
+        self.sold_tickets = {}
+        # self.price_tickets = {"regular": None, "presale": None}
