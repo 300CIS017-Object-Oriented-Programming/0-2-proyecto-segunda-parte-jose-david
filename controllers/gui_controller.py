@@ -5,6 +5,7 @@ from view.main_view import draw_option_menu, draw_home_page, draw_event_manager_
 from settings import BAR_EVENT_FIELDS, THEATER_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS
 import webbrowser
 
+
 class GUIController:
     """
     The GUIController class is responsible for managing the user interface of the application.
@@ -65,7 +66,7 @@ class GUIController:
 
         return fields
 
-    def edit_event(self, event, new_value, field, ):
+    def edit_event(self, event, new_value, field):
         """
         Edits the specified field of an existing event with a new value.
         It communicates with the BackController to edit the event and displays a success or error message
@@ -98,16 +99,13 @@ class GUIController:
             st.warning("Please, complete all the fields")
 
         else:
-            print(f"len event sold { len(event.sold_tickets)}, capacity {event.capacity}")
-            if len(event.sold_tickets) < int(event.capacity):
 
-                ticket_sold = self.back_controller.create_sold_ticket(event, ticket_type, buyer_name, buyer_id)
-                self.back_controller.add_sold_ticket_to_event(event, ticket_sold)
+            ticket_sold = self.back_controller.create_sold_ticket(event, ticket_type, buyer_name, buyer_id)
+            self.back_controller.add_sold_ticket_to_event(event, ticket_sold)
 
-                if self.back_controller.verify_sold_ticket(event, ticket_sold.buyer_id):
-                    st.success("sale completed successfully")
-                self.back_controller.generate_ticket_pdf(event, buyer_name, buyer_id, f"{buyer_id}.pdf")
-                # Abrir el PDF en el navegador web
-                webbrowser.open_new(f"{buyer_id}.pdf")
-            else:
-                st.error("The event is full")
+            if self.back_controller.verify_sold_ticket(event, ticket_sold.buyer_id):
+                st.success("sale completed successfully")
+            self.back_controller.generate_ticket_pdf(event, buyer_name, buyer_id, f"{buyer_id}.pdf")
+            # Abrir el PDF en el navegador web
+            webbrowser.open_new(f"{buyer_id}.pdf")
+

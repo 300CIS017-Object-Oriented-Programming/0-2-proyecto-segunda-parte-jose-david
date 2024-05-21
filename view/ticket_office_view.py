@@ -116,6 +116,8 @@ def draw_ticket_sales_management_interface(gui_controller):
             ticket_type = st.selectbox("Select the type of ticket", ["presale", "regular"])
         if gui_controller.back_controller.get_event_ticket(ticket_type, event_to_sale_ticket) is None:
             st.info(f"The {ticket_type} ticket has not been assigned yet")
+        elif len(event_to_sale_ticket.sold_tickets) >= int(event_to_sale_ticket.capacity):
+            st.error("The event is already sold out")
         else:
             with button_col:
                 st.write(" ")
@@ -145,6 +147,6 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
 
             # When the user presses the 'Submit' button, the form values are sent
             submit_button = st.form_submit_button(label='Submit')
-            print(type_ticket)
+
             if submit_button:
                 gui_controller.ticket_sale(event_to_sale_ticket, type_ticket, buyer_name, buyer_id)

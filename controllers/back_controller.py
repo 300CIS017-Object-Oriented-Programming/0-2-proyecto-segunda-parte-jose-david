@@ -94,7 +94,7 @@ class BackController:
         elif ticket_type == "regular":
             event.tickets[1] = Ticket(new_price, ticket_type)
 
-    def bool_valid_price(self, event, ticket_type, new_price):
+    def bool_valid_price(self, event, new_price):
         """
         Updates the price of the specified ticket type for the given event with validation.
         """
@@ -162,14 +162,13 @@ class BackController:
         """
         ticket = self.get_event_ticket(ticket_type, event)
         sold_ticket = TicketSold(ticket_type, buyer_name, buyer_id)
-        print(f"dentro back create {sold_ticket.buyer_id}")
+
         return sold_ticket
 
     def add_sold_ticket_to_event(self, event, sold_ticket):
         """
         Adds a sold ticket to the event's sold tickets dictionary.
         """
-        print(f"dentro back {sold_ticket.buyer_id}")
         event.sold_tickets[sold_ticket.buyer_id] = sold_ticket
 
     def verify_sold_ticket(self, event, buyer_id):
