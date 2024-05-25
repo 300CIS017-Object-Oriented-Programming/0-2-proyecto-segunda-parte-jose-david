@@ -1,7 +1,7 @@
 import streamlit as st
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
-from view.event_view import draw_create_event_interface, draw_events_library, \
+from view.event_manager_view import draw_create_event_interface, draw_events_library, \
     draw_searched_event_interface
 from view.ticket_office_view import draw_ticket_management_interface, draw_ticket_sales_management_interface
 
@@ -37,71 +37,70 @@ def draw_home_page():
 
 
 def draw_event_manager_page(gui_controller):
-    """On this page the user can create, edit, delete and search events. The user can also see the events library"""
-    # Initialize session state variables if they don't exist
+    """
+    Dibujar lo relacionado con la pagina de manejo de eventos
+    """
+
+    # Incializacion de las variables de session state para manejar las paginas
+
     if "create_event" not in st.session_state:
         st.session_state.create_event = False
     if "search_event" not in st.session_state:
         st.session_state.search_event = False
     if "show_event_library" not in st.session_state:
         st.session_state.show_event_library = False
-    if "edit_event_interface" not in st.session_state:
-        st.session_state.edit_event_interface = False
-    if "delete_event_interface" not in st.session_state:
-        st.session_state.delete_event_interface = False
 
-    # Page title
+    # Titulo
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Event Manager</div>", unsafe_allow_html=True)
 
-    """Create events"""
+    """ Crear evento """
+
     st.subheader("Create Event")
-    empty_col1, col1, empty_col2 = st.columns([0.9, 2.5, 1])
+    # columnas
+    empty, select_event_type_col, select_button_col, close_button_col, empty = st.columns([0.9, 1, 0.5, 0.4, 0.6])
 
-    with col1:
-        event_type = st.selectbox("Select the type of event", ["Select...", "bar", "philanthropic", "theater"])
-
-        # Choose the event fields depending on the type of event
-        if event_type != "Select...":
+    with select_event_type_col:
+        event_type = st.selectbox("Select the type of event", ["bar", "philanthropic", "theater"])
+    with select_button_col:
+        st.write("")  # por motivos esteticos
+        st.write("")
+        if st.button("Select"):
             st.session_state.create_event = True
-            event_fields = gui_controller.choose_event_fields(event_type)
+            st.session_state.search_event = False  # Cierra la interfaz de búsqueda
+    if st.session_state.create_event:
+        empty, form_col, empty = st.columns([0.5, 3, 0.5])  # columnas
+        with form_col:
+            draw_create_event_interface(gui_controller, event_type, close_button_col)  # view/event_manager_view
 
-            # If an event type has been selected, draw the event creation interface
-            if event_fields is not None and st.session_state.create_event:
-                draw_create_event_interface(gui_controller, event_type, event_fields)  # event_view
+    """ Consular, editar o eliminar evento """
 
-                # Close the other interfaces while creating an event (Generate a better feeling for the user)
-    """Consult event, edit and delete events"""
     st.subheader("Consult event")
-    event_date_consult = st.date_input("Enter the date of the event to consult")
 
-    # columns for search buttons
-    search_button_col, out_search_button_col, empty = st.columns([0.3, 0.3, 3])
+    date_event_col, search_button_col, close_button_col, empty = st.columns([1, 0.5, 0.3, 2])  # columnas
 
+    with date_event_col:
+        event_date_consult = st.date_input("Enter the date of the event to consult")
     with search_button_col:
+        st.write("")  # por motivos esteticos
+        st.write("")
         if st.button("Search"):
             st.session_state.search_event = True
-
-        with out_search_button_col:
-            if st.button("close"):  # FIXME: change to an X icon
-                st.session_state.search_event = False
-                st.session_state.edit_event_interface = False
-                st.session_state.delete_event_interface = False
+            st.session_state.create_event = False  # Cierra la interfaz de creación
 
     if st.session_state.search_event:
-        draw_searched_event_interface(gui_controller, event_date_consult)  # view/event_view
+        draw_searched_event_interface(gui_controller, event_date_consult, close_button_col)  # view/event_view
 
     """Event library"""
-    library_button_col, out_library_button_col, empty = st.columns([0.5, 0.5, 3])  # FIXME: change size
+
+    library_button_col, close_button_col, empty = st.columns([0.5, 0.5, 3])  # columnas
+
     with library_button_col:
         if st.button("Event library"):
             st.session_state.show_event_library = True
-    with out_library_button_col:
-        if st.button("Close library"):  # FIXME: change to an X icon
-            st.session_state.show_event_library = False
 
     if st.session_state.show_event_library:
-        draw_events_library(gui_controller)
+        draw_events_library(gui_controller, close_button_col)  # view/event_manager_view
 
 
 def draw_ticket_office_page(gui_controller):
@@ -135,9 +134,48 @@ def draw_ticket_office_page(gui_controller):
         draw_ticket_sales_management_interface(gui_controller)  # view/ticket_office_view
 
 
-def draw_access_management_page():
+def draw_access_management_page(gui_controller):
+    if "access_management" not in st.session_state:
+        st.session_state.access_management = False
+
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Manejo de ingreso</div>", unsafe_allow_html=True)
+
+    current_date = gui_controller.back_controller.get_current_date()
+    event_today = gui_controller.back_controller.get_event_by_date(current_date)
+    if event_today:
+        st.write("Event programing for today")  # FIXME: CSS
+        name_event_col, opening_time_col, show_time_col = st.columns([1, 1, 1])
+        with name_event_col:
+            st.write(f"Event: {event_today.name}")
+        with opening_time_col:
+            st.write(f"Opening time: {event_today.opening_time}")
+        with show_time_col:
+            st.write(f"Show time: {event_today.show_time}")
+        if st.button("Register access"):
+            st.session_state.access_management = True
+        if st.session_state.access_management:
+            draw_register_access_interface(gui_controller, event_today)
+
+    else:
+        st.subheader("No event for today")  # FIXME: CSS
+
+
+def draw_register_access_interface(gui_controller, event_today):
+    empy, id_input_col, sold_tickets_col, empty = st.columns([1, 1, 1, 1])
+    with id_input_col:
+        id_input_to_access = st.text_input("Enter the ID")
+    with sold_tickets_col:
+        sold_tickets_amount = len(event_today.sold_tickets)
+        st.write(f"Sold tickets: {sold_tickets_amount}")
+    if st.button("verify"):
+        if id_input_to_access:
+            gui_controller.verify_access(event_today, id_input_to_access)
+        else:
+            st.error("Enter the ID")
+    if st.button("Close", key="close_access_management"):
+        st.session_state.access_management = False
+        st.rerun()
 
 
 def draw_reports_page():

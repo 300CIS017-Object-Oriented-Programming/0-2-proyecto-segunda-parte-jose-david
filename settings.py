@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', set_title_color);
 """
 
 BAR_EVENT_FIELDS = {
+
     "name": {"type": "text", "label": "Name"},
     "date": {"type": "date", "label": "Date"},
     "opening_time": {"type": "time", "label": "Opening Time"},
@@ -55,10 +56,10 @@ BAR_EVENT_FIELDS = {
     "location": {"type": "text", "label": "Location"},
     "address": {"type": "text", "label": "Address"},
     "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
+    "artists": {"type": "text", "label": "Artists(put a comma between artists)"},
     "capacity": {"type": "number", "label": "Capacity"},
-    "bar_profit": {"type": "number", "label": "Bar Profit"},
-    "artist_payment": {"type": "number", "label": "Artist Payment"},
+    "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
+
 }
 
 THEATER_EVENT_FIELDS = {
@@ -69,24 +70,29 @@ THEATER_EVENT_FIELDS = {
     "location": {"type": "text", "label": "Location"},
     "address": {"type": "text", "label": "Address"},
     "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
+    "artists": {"type": "text", "label": "Artists(put a comma between artists)"},
     "capacity": {"type": "number", "label": "Capacity"},
     "rental_cost": {"type": "number", "label": "Rental Cost"},
+    "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
 }
 
 PHILANTHROPIC_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Name"},
+    "name": {"type": "text", "label": "Name of event"},
     "date": {"type": "date", "label": "Date"},
     "opening_time": {"type": "time", "label": "Opening Time"},
     "show_time": {"type": "time", "label": "Show Time"},
     "location": {"type": "text", "label": "Location"},
     "address": {"type": "text", "label": "Address"},
     "city": {"type": "text", "label": "City"},
-    "artists": {"type": "text", "label": "Artists"},
+    "artists": {"type": "text", "label": "Artists(put a comma between artists)"},
     "capacity": {"type": "number", "label": "Capacity"},
     "sponsors": {"type": "text", "label": "Sponsors"},
     "sponsorship_amount": {"type": "number", "label": "Sponsorship Amount"},
+    "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
 }
+
+
+
 
 bar_event_data = {
     'name': 'Test Bar Event',

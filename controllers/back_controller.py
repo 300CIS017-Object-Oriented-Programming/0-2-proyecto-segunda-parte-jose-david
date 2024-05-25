@@ -6,7 +6,9 @@ from models.ticket_sold import TicketSold
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.colors import lightblue
-
+from datetime import datetime
+from settings import BAR_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS, THEATER_EVENT_FIELDS
+from models.artist import Artist
 
 class BackController:
     """
@@ -19,6 +21,23 @@ class BackController:
         Initializes the BackController with an empty dictionary of events.
         """
         self.events = {}
+        self.artists = {}
+
+    """ Event_manager_functions """
+
+    def choose_event_fields(self, event_type):
+        """
+        Returns the appropriate fields for the specified event type.
+        """
+        fields = None
+        if event_type == "bar":
+            fields = BAR_EVENT_FIELDS
+        elif event_type == "philanthropic":
+            fields = PHILANTHROPIC_EVENT_FIELDS
+        elif event_type == "theater":
+            fields = THEATER_EVENT_FIELDS
+
+        return fields
 
     def event_exists(self, date):
         """
@@ -41,6 +60,45 @@ class BackController:
         elif event_type == "philanthropic":
             self.events[event_data['date']] = PhilanthropicEvent(**event_data)
             self.events[event_data['date']].type = 'philanthropic'
+
+        # Split the 'artists' string into a list of artist names
+        artist_names = event_data['artists'].split(',')
+
+        # For each artist name, if it exists in the artists dictionary, add the event to its list of events.
+        # If it does not exist, create a new Artist and add the event to its list of events.
+        for artist_name in artist_names:
+            artist_name = artist_name.strip()  # Remove leading and trailing whitespace
+            if artist_name in self.artists:
+                self.artists[artist_name].events_participated[event_data['date']] = self.events[event_data['date']]
+            else:
+                new_artist = Artist(artist_name)
+                new_artist.events_participated[event_data['date']] = self.events[event_data['date']]
+                self.artists[artist_name] = new_artist
+
+    def edit_event(self, event, field, new_value):
+        """
+        Edits the specified field of an existing event with a new value.
+        """
+        if field == 'artists':
+            # Remove current artists from the event
+
+            for artist_name in list(self.artists.keys()):
+                if event.date in self.artists[artist_name].events_participated:
+                    del self.artists[artist_name]
+
+            # Split the 'artists' string into a list of artist names
+            artist_names = new_value.split(',')
+
+            # For each artist name, create a new Artist and add the event to its list of events
+
+            for artist_name in artist_names:
+                artist_name = artist_name.strip()  # Remove leading and trailing whitespace
+                new_artist = Artist(artist_name)
+                new_artist.events_participated[event.date] = event
+                self.artists[artist_name] = new_artist
+
+
+        setattr(event, field, new_value)
 
     def delete_event(self, event):
         """
@@ -70,6 +128,9 @@ class BackController:
         """
         return list(self.events.keys())
 
+    """ Ticket_office_functions """
+
+    """ Management tickets functions """
     def get_event_ticket(self, ticket_type, event):
         """
         Assigns a ticket type to an event.
@@ -85,14 +146,31 @@ class BackController:
 
         return ans_ticket
 
-    def update_ticket_price(self, event, ticket_type, new_price):
+    def get_amount_ticket_assigned(self, ticket_type, event):
+        ticket = self.get_event_ticket(ticket_type, event)
+        if ticket is None:
+            amount = 0
+        else:
+            amount = ticket.amount
+        return amount
+
+    def create_ticket(self, event, ticket_type, price, amount):
         """
-        Updates the price of the specified ticket type for the given event.
+        Creates a new ticket for the specified event with the given price and amount.
         """
         if ticket_type == "presale":
-            event.tickets[0] = Ticket(new_price, ticket_type)
+            event.tickets[0] = Ticket(price, ticket_type)
+            setattr(event.tickets[0], 'amount', amount)
         elif ticket_type == "regular":
-            event.tickets[1] = Ticket(new_price, ticket_type)
+            event.tickets[1] = Ticket(price, ticket_type)
+            setattr(event.tickets[1], 'amount', amount)
+
+    def update_ticket(self, ticket_to_edit, field_to_edit, new_value):
+        """
+        Updates the specified field of the ticket with the new value.
+        """
+        setattr(ticket_to_edit, field_to_edit, new_value)
+
 
     def bool_valid_price(self, event, new_price):
         """
@@ -103,6 +181,21 @@ class BackController:
             valid_price = False
 
         return valid_price
+
+    def bool_valid_amount(self, event, ticket_type, new_amount):
+        """
+        Updates the amount of the specified ticket type for the given event with validation.
+        """
+        # Cambiar.
+        valid_amount = True
+        if ticket_type == "presale" and new_amount > event.tickets[0].amount:
+            valid_amount = False
+        elif ticket_type == "regular" and new_amount > event.tickets[1].amount:
+            valid_amount = False
+
+        return valid_amount
+
+    """ Ticket_sales_functions """
 
     def generate_ticket_pdf(self, event, buyer_name, buyer_id, filename):
         c = canvas.Canvas(filename, pagesize=letter)
@@ -176,3 +269,15 @@ class BackController:
         Verifies if a ticket has been sold to the buyer with the specified ID.
         """
         return buyer_id in event.sold_tickets
+
+    def get_sold_ticket_by_id(self, event, buyer_id):
+        """
+        Retrieves a sold ticket by the buyer's ID.
+        """
+        return event.sold_tickets.get(buyer_id, None)
+
+    def get_current_date(self):
+        """
+        Returns the current date in the format 'YYYY-MM-DD'.
+        """
+        return datetime.now().date()
