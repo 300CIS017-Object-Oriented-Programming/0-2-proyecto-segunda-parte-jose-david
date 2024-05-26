@@ -143,7 +143,7 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
     col1, col2, col3, col4 = st.columns([0.8, 1, 1.5, 1])  # Columns
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
 
-    if ticket.amount_available == 0:
+    if ticket.amount_available == 0 or event_to_sale_ticket.bool_sold_out[type_ticket]:
         st.info(f"{type_ticket} tickets are sold out")
     else:
         with col2:
@@ -155,10 +155,13 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
             elif type_ticket == "regular":
                 st.write(f"regular tickets avaliable: {event_to_sale_ticket.tickets[1].amount_available}")
             st.write(f"Total tickets sold: {len(event_to_sale_ticket.sold_tickets)}")
-        empty, button_col, close_button, empty = st.columns([0.5, 1, 1, 0.5])  # Columns
-        with button_col:
+        empty, button_sale_col, button_sold_out, close_button, empty = st.columns([0.5, 1, 1, 1, 0.5])  # Columns
+        with button_sale_col:
             if st.button("Sale ticket"):
                 st.session_state.sale_ticket_form = True
+        with button_sold_out:
+            if st.button(f"close {type_ticket}"):
+                gui_controller.close_ticket_sale(event_to_sale_ticket, type_ticket)
         if st.session_state.sale_ticket_form:
             draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, close_button)
 
@@ -196,6 +199,4 @@ def draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, clo
                         st.write("Complimentary ticket")
                     gui_controller.ticket_sale(event_to_sale_ticket, type_ticket, buyer_name, buyer_id, buyer_email,
                                                buyer_age, ticket_quantity)
-                    st.session_state.sale_ticket_form = False
-                    st.session_state.confirm_sale = False
-                    st.rerun()
+

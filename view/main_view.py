@@ -4,16 +4,20 @@ from streamlit_option_menu import option_menu
 from view.event_manager_view import draw_create_event_interface, draw_events_library, \
     draw_searched_event_interface
 from view.ticket_office_view import draw_ticket_management_interface, draw_ticket_sales_management_interface
+from view.access_management_view import draw_register_access_interface
 
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
 
 
 # Navigation menu
 def draw_option_menu(gui_controller):
+    """Draw the navigation menu of the application"""
+
     with st.sidebar:
+        st.title("Humor Hub")
         menu = option_menu(
             menu_title="Menu",
-            options=["Home", "Events", "Ticket Office", "Access", "Reports"],
+            options=["Home", "Events", "Ticket Office", "Access"],
         )
     # Depending on the selected option in the menu, set the current page
     if menu == "Home":
@@ -24,15 +28,13 @@ def draw_option_menu(gui_controller):
         gui_controller.run_page = "ticket_office"
     elif menu == "Access":
         gui_controller.run_page = "access_management"
-    elif menu == "Reports":
-        gui_controller.run_page = "reports"
 
 
 # Main pages of the GUI
 def draw_home_page():
     """On the home page, the user is welcomed and the main dashboard of the application is managed"""
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
-    st.markdown("# <div class='title_main_page'>HUMOR HUB</div>", unsafe_allow_html=True)
+    st.markdown("# <div class='title_main_page'>WELCOME !</div>", unsafe_allow_html=True)
     st.write("Welcome to Humor Hub, here you can manage events, ticketing, access and reports.")
 
 
@@ -149,39 +151,19 @@ def draw_access_management_page(gui_controller):
     event_today = gui_controller.back_controller.get_event_by_date(current_date)
     if event_today:
         st.write("Event programing for today")  # FIXME: CSS
-        name_event_col, opening_time_col, show_time_col = st.columns([1, 1, 1])
+        name_event_col, opening_time_col, show_time_col = st.columns([1, 1, 1])  # Columns
         with name_event_col:
             st.write(f"Event: {event_today.name}")
         with opening_time_col:
             st.write(f"Opening time: {event_today.opening_time}")
         with show_time_col:
             st.write(f"Show time: {event_today.show_time}")
-        if st.button("Register access"):
-            st.session_state.access_management = True
+        button_col, close_button, empty = st.columns([1, 1, 3])  # Columns
+        with button_col:
+            if st.button("Register access"):
+                st.session_state.access_management = True
         if st.session_state.access_management:
-            draw_register_access_interface(gui_controller, event_today)
+            draw_register_access_interface(gui_controller, event_today, close_button)
 
     else:
         st.subheader("No event for today")  # FIXME: CSS
-
-
-def draw_register_access_interface(gui_controller, event_today):
-    empy, id_input_col, sold_tickets_col, empty = st.columns([1, 1, 1, 1])
-    with id_input_col:
-        id_input_to_access = st.text_input("Enter the ID")
-    with sold_tickets_col:
-        sold_tickets_amount = len(event_today.sold_tickets)
-        st.write(f"Sold tickets: {sold_tickets_amount}")
-    if st.button("verify"):
-        if id_input_to_access:
-            gui_controller.verify_access(event_today, id_input_to_access)
-        else:
-            st.error("Enter the ID")
-    if st.button("Close", key="close_access_management"):
-        st.session_state.access_management = False
-        st.rerun()
-
-
-def draw_reports_page():
-    st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
-    st.markdown("# <div class='title_main_functions'>Generar reportes</div>", unsafe_allow_html=True)

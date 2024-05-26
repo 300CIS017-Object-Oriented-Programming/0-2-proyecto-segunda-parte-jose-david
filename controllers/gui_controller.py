@@ -1,7 +1,7 @@
 import streamlit as st
 from controllers.back_controller import BackController
 from view.main_view import draw_option_menu, draw_home_page, draw_event_manager_page, draw_ticket_office_page, \
-    draw_access_management_page, draw_reports_page
+    draw_access_management_page
 
 import webbrowser
 import datetime
@@ -38,8 +38,6 @@ class GUIController:
             draw_ticket_office_page(self)
         elif self.run_page == 'access_management':
             draw_access_management_page(self)
-        elif self.run_page == 'reports':
-            draw_reports_page()
 
     def valid_event_data(self, event_data, event_type, fields_to_validate=None):
         """
@@ -203,14 +201,19 @@ class GUIController:
                 self.back_controller.generate_ticket_pdf(event, sold_tickets, f"{buyer_id}.pdf")
                 # Abrir el PDF en el navegador web
                 webbrowser.open_new(f"{buyer_id}.pdf")
+                st.session_state.sale_ticket_form = False
+                st.session_state.confirm_sale = False
+                st.rerun()
 
 
-    def verify_access(self, event, buyer_id):
-        sold_ticket = self.back_controller.get_sold_ticket_by_id(event, buyer_id)
+    def verify_access(self, event, ticket_code):
+        sold_ticket = self.back_controller.get_sold_ticket_by_code(event, ticket_code)
         if sold_ticket is not None:
             st.success(f"Access granted, welcome {sold_ticket.buyer_name}")
+            return True
         else:
-            st.error(f"Access denied, {buyer_id} is not registered")
+            st.error(f"Access denied, {ticket_code} is not registered")
+            return False
 
     def verify_amount_tickets(self, event, ticket_type, ticket_quantity):
 
@@ -223,3 +226,9 @@ class GUIController:
             return False
         else:
             return True
+
+    def close_ticket_sale(self,event_to_sale_ticket, type_ticket):
+        event_to_sale_ticket.bool_sold_out[type_ticket] = True
+        st.session_state.sale_ticket_form = False
+        st.session_state.sale_ticket = False
+        st.rerun()

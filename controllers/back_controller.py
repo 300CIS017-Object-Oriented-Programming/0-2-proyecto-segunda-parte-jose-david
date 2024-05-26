@@ -302,3 +302,8 @@ class BackController:
             event.tickets[0].amount_available -= ticket_sale_quantity
         elif ticket_type == "regular":
             event.tickets[1].amount_available -= ticket_sale_quantity
+
+    def register_access(self, event, ticket_code):
+        if ticket_code in event.sold_tickets:
+            del event.sold_tickets[ticket_code]
+
