@@ -8,4 +8,5 @@ class Ticket:
         self.price = price
         self.type_ticket = type_ticket
         self.amount = 0
+        self.amount_available = 0  # sirve para manejar la cantidad de boletas disponibles
         # self.reason_purchase = " "

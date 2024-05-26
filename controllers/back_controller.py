@@ -164,9 +164,11 @@ class BackController:
         if ticket_type == "presale":
             event.tickets[0] = Ticket(price, ticket_type)
             setattr(event.tickets[0], 'amount', amount)
+            setattr(event.tickets[0], 'amount_available', amount)
         elif ticket_type == "regular":
             event.tickets[1] = Ticket(price, ticket_type)
             setattr(event.tickets[1], 'amount', amount)
+            setattr(event.tickets[1], 'amount_available', amount)
 
     def update_ticket(self, ticket_to_edit, field_to_edit, new_value):
         """
@@ -297,6 +299,6 @@ class BackController:
 
     def control_tickets_available(self, event, ticket_type, ticket_sale_quantity):
         if ticket_type == "presale":
-            event.tickets[0].amount -= ticket_sale_quantity
+            event.tickets[0].amount_available -= ticket_sale_quantity
         elif ticket_type == "regular":
-            event.tickets[1].amount -= ticket_sale_quantity
+            event.tickets[1].amount_available -= ticket_sale_quantity

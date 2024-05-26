@@ -108,7 +108,7 @@ class GUIController:
         if not self.valid_event_data(event_data, event.type, [field]):
             return
         else:
-            print(field)
+
             self.back_controller.edit_event(event, field, new_value)
             st.success("Evento editado con éxito")
 
@@ -168,7 +168,6 @@ class GUIController:
         if not self.valid_ticket_fields(other_amount, new_amount, price, ticket.type_ticket, event):
             return
         else:
-            print(field)
             self.back_controller.update_ticket(ticket, field, new_value)
             st.success("Ticket editado con éxito")
 

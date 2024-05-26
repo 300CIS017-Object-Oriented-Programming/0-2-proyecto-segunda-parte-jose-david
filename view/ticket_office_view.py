@@ -60,7 +60,7 @@ def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_man
                 price = st.number_input("Enter the price of the ticket")
             with amount_col:
                 amount = st.number_input("Enter the amount of tickets", step=1)
-                print(amount)
+
             if st.button("Assign ticket"):
                 gui_controller.assign_ticket_to_event(event_to_management_ticket, type_ticket, price, amount)
                 st.session_state.edit_ticket = False
@@ -143,7 +143,7 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
     col1, col2, col3, col4 = st.columns([0.8, 1, 1.5, 1])  # Columns
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
 
-    if ticket.amount == 0:
+    if ticket.amount_available == 0:
         st.info(f"{type_ticket} tickets are sold out")
     else:
         with col2:
@@ -151,9 +151,9 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
             st.write(f"Event capacity: {event_to_sale_ticket.capacity}")
         with col3:
             if type_ticket == "presale":
-                st.write(f"presale tickets avaliable: {event_to_sale_ticket.tickets[0].amount}")
+                st.write(f"presale tickets avaliable: {event_to_sale_ticket.tickets[0].amount_available}")
             elif type_ticket == "regular":
-                st.write(f"regular tickets avaliable: {event_to_sale_ticket.tickets[1].amount}")
+                st.write(f"regular tickets avaliable: {event_to_sale_ticket.tickets[1].amount_available}")
             st.write(f"Total tickets sold: {len(event_to_sale_ticket.sold_tickets)}")
         empty, button_col, close_button, empty = st.columns([0.5, 1, 1, 0.5])  # Columns
         with button_col:
