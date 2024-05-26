@@ -20,5 +20,6 @@ class Event:
         self.capacity = capacity  # The maximum capacity of the event
         self.tickets = [None, None]  # The tickets associated with the event (presale,regular)
         self.sold_tickets = {}
+        self.bool_sold_ticket = {"presale": False, "regular": False}  # A boolean to check if a ticket has been sold
         self.state = 'to realize'
         # self.price_tickets = {"regular": None, "presale": None}

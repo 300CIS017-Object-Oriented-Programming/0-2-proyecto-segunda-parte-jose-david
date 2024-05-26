@@ -107,28 +107,32 @@ def draw_ticket_office_page(gui_controller):
     """On this page the user can manage the ticketing of the events and the sales"""
 
     # Initialize session state variables if they don't exist
-    if "ticket_management" not in st.session_state:
-        st.session_state.ticket_management = False
     if "ticket_sale_management" not in st.session_state:
         st.session_state.ticket_sale_management = False
+    if "ticket_management" not in st.session_state:
+        st.session_state.ticket_management = False
 
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Gestor de boletería</div>", unsafe_allow_html=True)
+    empty, management_col, sales_col, empty = st.columns([1, 1, 1, 1])
 
     """ Tickets management """
 
-    st.subheader("price of the tickets")
-    if st.button("Tickets management"):
-        st.session_state.ticket_management = True
+    with management_col:
+        st.subheader("price of the tickets")
+        if st.button("Tickets management"):
+            st.session_state.ticket_management = True
+            st.session_state.ticket_sale_management = False  # Close the ticket sales management interface
 
     if st.session_state.ticket_management:
         draw_ticket_management_interface(gui_controller)  # view/ticket_office_view
 
-    """ Ticket sales manager """
+    """ Ticket sales management """
 
-    st.subheader("Sales management")
-    if st.button("Sales management"):
-        st.session_state.ticket_sale_management = True
+    with sales_col:
+        st.subheader("Sales management")
+        if st.button("Sales management"):
+            st.session_state.ticket_sale_management = True
 
     if st.session_state.ticket_sale_management:
         draw_ticket_sales_management_interface(gui_controller)  # view/ticket_office_view

@@ -9,6 +9,9 @@ from reportlab.lib.colors import lightblue
 from datetime import datetime
 from settings import BAR_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS, THEATER_EVENT_FIELDS
 from models.artist import Artist
+import random
+import string
+
 
 class BackController:
     """
@@ -97,7 +100,6 @@ class BackController:
                 new_artist.events_participated[event.date] = event
                 self.artists[artist_name] = new_artist
 
-
         setattr(event, field, new_value)
 
     def delete_event(self, event):
@@ -131,6 +133,7 @@ class BackController:
     """ Ticket_office_functions """
 
     """ Management tickets functions """
+
     def get_event_ticket(self, ticket_type, event):
         """
         Assigns a ticket type to an event.
@@ -171,7 +174,6 @@ class BackController:
         """
         setattr(ticket_to_edit, field_to_edit, new_value)
 
-
     def bool_valid_price(self, event, new_price):
         """
         Updates the price of the specified ticket type for the given event with validation.
@@ -197,87 +199,104 @@ class BackController:
 
     """ Ticket_sales_functions """
 
-    def generate_ticket_pdf(self, event, buyer_name, buyer_id, filename):
+    def generate_ticket_pdf(self, event, sold_tickets, filename):
         c = canvas.Canvas(filename, pagesize=letter)
+        for i in range(len(sold_tickets)):
+            # Dibujar un rectángulo como margen
+            # Los parámetros son: x, y, ancho, alto
+            c.setStrokeColor(lightblue)
+            c.rect(50, 50, 500, 670)
 
-        # Dibujar un rectángulo como margen
-        # Los parámetros son: x, y, ancho, alto
-        c.setStrokeColor(lightblue)
-        c.rect(50, 50, 500, 670)
+            # Añadir texto al PDF
+            c.setFont("Courier", 30)
+            c.drawString(150, 750, "Humor Hub Tickets")
 
-        # Añadir texto al PDF
-        c.setFont("Courier", 30)
-        c.drawString(150, 750, "Humor Hub Tickets")
+            c.setFont("Times-Roman", 8)
+            c.drawString(120, 680, "Comprador: ")
+            c.drawString(120, 660, "ID: ")
+            c.drawString(120, 640, "Evento: ")
+            c.drawString(120, 620, "Fecha: ")
+            c.drawString(220, 620, "Artistas: ")
+            c.drawString(120, 600, "Hora de apertura\nde puertas: ")
+            c.drawString(120, 595, "de puertas: ")
+            c.drawString(220, 600, "Hora del show: ")
+            c.drawString(120, 560, "Ubicación: ")
+            c.drawString(220, 560, "Ciudad: ")
+            c.drawString(320, 560, "Dirección: ")
+            c.drawString(420, 560, "codigo: ")
 
-        c.setFont("Times-Roman", 8)
-        c.drawString(120, 680, "Comprador: ")
-        c.drawString(120, 660, "ID: ")
-        c.drawString(120, 640, "Evento: ")
-        c.drawString(120, 620, "Fecha: ")
-        c.drawString(220, 620, "Artistas: ")
-        c.drawString(120, 600, "Hora de apertura\nde puertas: ")
-        c.drawString(120, 595, "de puertas: ")
-        c.drawString(220, 600, "Hora del show: ")
-        c.drawString(120, 560, "Ubicación: ")
-        c.drawString(220, 560, "Ciudad: ")
-        c.drawString(320, 560, "Dirección: ")
+            c.setFont("Times-Bold", 8)
+            c.drawString(180, 680, f"{sold_tickets[i].buyer_name}")
+            c.drawString(180, 660, f"{sold_tickets[i].buyer_id}")
+            c.drawString(180, 640, f" {event.name}")
+            c.drawString(180, 620, f" {event.date}")
+            c.drawString(280, 620, f" {event.opening_time}")
+            c.drawString(180, 600, f" {event.show_time}")
+            c.drawString(280, 600, f" {event.location}")
+            c.drawString(180, 560, f" {event.city}")
+            c.drawString(280, 560, f" {event.address}")
+            c.drawString(380, 560, f" {event.artists}")
+            c.drawString(480, 560, f" {sold_tickets[i].code}")
 
-        c.setFont("Times-Bold", 8)
-        c.drawString(180, 680, f"{buyer_name}")
-        c.drawString(180, 660, f"{buyer_id}")
-        c.drawString(180, 640, f" {event.name}")
-        c.drawString(180, 620, f" {event.date}")
-        c.drawString(280, 620, f" {event.opening_time}")
-        c.drawString(180, 600, f" {event.show_time}")
-        c.drawString(280, 600, f" {event.location}")
-        c.drawString(180, 560, f" {event.city}")
-        c.drawString(280, 560, f" {event.address}")
-        c.drawString(380, 560, f" {event.artists}")
+            # Agregar la imagen
+            # c.drawImage("ruta/a/la/imagen.jpg", x, y, ancho, alto)
 
-        # Agregar la imagen
-        # c.drawImage("ruta/a/la/imagen.jpg", x, y, ancho, alto)
+            # Dibujar un segundo rectángulo como margen
+            c.setStrokeColor(lightblue)
+            c.rect(50, 50, 500, 400)
 
-        # Dibujar un segundo rectángulo como margen
-        c.setStrokeColor(lightblue)
-        c.rect(50, 50, 500, 400)
+            c.setFont("Helvetica", 16)
+            c.drawString(80, 380, "IMPORTANTE")
+            c.showPage()
+            # Aquí puedes agregar el texto importante
 
-        c.setFont("Helvetica", 16)
-        c.drawString(80, 380, "IMPORTANTE")
-
-        # Aquí puedes agregar el texto importante
-
-        # Finalizar y guardar el PDF
+            # Finalizar y guardar el PDF
         c.save()
 
-    def create_sold_ticket(self, event, ticket_type, buyer_name, buyer_id):
+    def create_sold_tickets(self, event, ticket_type, buyer_name, buyer_id, buyer_email, buyer_age, ticket_quantity):
         """
         Creates a new sold ticket for the specified event and ticket type.
         """
-        ticket = self.get_event_ticket(ticket_type, event)
-        sold_ticket = TicketSold(ticket_type, buyer_name, buyer_id)
+        sold_tickets = []
+        for _ in range(ticket_quantity):
+            code = self.generate_ticket_code()
+            sold_ticket = TicketSold(code, ticket_type, buyer_name, buyer_id, buyer_email, buyer_age)
+            event.sold_tickets[sold_ticket.code] = sold_ticket
+            sold_tickets.append(sold_ticket)
 
-        return sold_ticket
+        return sold_tickets
 
-    def add_sold_ticket_to_event(self, event, sold_ticket):
-        """
-        Adds a sold ticket to the event's sold tickets dictionary.
-        """
-        event.sold_tickets[sold_ticket.buyer_id] = sold_ticket
+    def generate_ticket_code(self):
+        code = None
+        letters = ''.join(random.choice(string.ascii_uppercase) for _ in range(3))
+        numbers = ''.join(random.choice(string.digits) for _ in range(3))
+        code = letters + numbers
+        return code
 
-    def verify_sold_ticket(self, event, buyer_id):
+    def verify_sold_tickets(self, event, tickets_sold):
         """
         Verifies if a ticket has been sold to the buyer with the specified ID.
         """
-        return buyer_id in event.sold_tickets
+        verify = True
+        for ticket in tickets_sold:
+            if ticket.code not in event.sold_tickets:
+                verify = False
+        return verify
 
-    def get_sold_ticket_by_id(self, event, buyer_id):
+    def get_sold_ticket_by_code(self, event, code):
         """
         Retrieves a sold ticket by the buyer's ID.
         """
-        return event.sold_tickets.get(buyer_id, None)
+        return event.sold_tickets.get(code, None)
 
     def get_current_date(self):
         """
         Returns the current date in the format 'YYYY-MM-DD'.
         """
         return datetime.now().date()
+
+    def control_tickets_available(self, event, ticket_type, ticket_sale_quantity):
+        if ticket_type == "presale":
+            event.tickets[0].amount -= ticket_sale_quantity
+        elif ticket_type == "regular":
+            event.tickets[1].amount -= ticket_sale_quantity

@@ -7,4 +7,5 @@ class Ticket:
     def __init__(self, price, type_ticket):
         self.price = price
         self.type_ticket = type_ticket
+        self.amount = 0
         # self.reason_purchase = " "

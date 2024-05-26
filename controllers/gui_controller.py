@@ -92,7 +92,6 @@ class GUIController:
             self.back_controller.create_event(event_type, **event_data)
             st.success("event created successfully")
 
-
     def edit_event(self, event, new_value, field):
         """
         Edits the specified field of an existing event with a new value.
@@ -124,6 +123,19 @@ class GUIController:
             st.session_state.delete_event_interface = False
             st.rerun()
 
+    def draw_input_field_edit(self, field, config):
+        if config["type"] == "text":
+            return st.text_input("New value")
+        elif config["type"] == "date":
+            return st.date_input("New value")
+        elif config["type"] == "time":
+            return st.time_input("New value")
+        elif config["type"] == "number":
+            if field == "capacity" or field == "amount":
+                return st.number_input("New value", step=1)
+            else:
+                return st.number_input("New value")
+
     def valid_ticket_fields(self, other_amount, new_amount, price, ticket_type, event):
 
         """
@@ -145,6 +157,21 @@ class GUIController:
             st.error("The amount of tickets should not exceed the event's capacity.")
         return valid_fields
 
+    def edit_ticket_event_gui(self, event, ticket_type, new_value, field):
+        ticket = self.back_controller.get_event_ticket(ticket_type, event)
+        other_amount = self.get_other_amount(event, ticket.type_ticket)
+
+        new_amount = ticket.amount if field == 'price' else new_value
+        price = ticket.price if field == 'amount' else new_value
+
+        # Validar los datos del evento
+        if not self.valid_ticket_fields(other_amount, new_amount, price, ticket.type_ticket, event):
+            return
+        else:
+            print(field)
+            self.back_controller.update_ticket(ticket, field, new_value)
+            st.success("Ticket editado con éxito")
+
     def assign_ticket_to_event(self, event, ticket_type, price, new_amount):
 
         other_amount = self.get_other_amount(event, ticket_type)
@@ -160,21 +187,24 @@ class GUIController:
 
         return other_amount
 
-    def ticket_sale(self, event, ticket_type, buyer_name, buyer_id):
+    def ticket_sale(self, event, ticket_type, buyer_name, buyer_id, buyer_email, buyer_age, ticket_quantity):
 
-        if buyer_name.strip() == "" or buyer_id.strip() == "":  # .strip use for remove white spaces
+        if (buyer_name.strip() == "" or buyer_id.strip() == "" or buyer_email.strip() == "" or buyer_age == ""
+                or ticket_quantity <= 0):
             st.warning("Please, complete all the fields")
 
         else:
 
-            ticket_sold = self.back_controller.create_sold_ticket(event, ticket_type, buyer_name, buyer_id)
-            self.back_controller.add_sold_ticket_to_event(event, ticket_sold)
-
-            if self.back_controller.verify_sold_ticket(event, ticket_sold.buyer_id):
+            sold_tickets = self.back_controller.create_sold_tickets(event, ticket_type, buyer_name, buyer_id,
+                                                                    buyer_email, buyer_age, ticket_quantity)
+            if self.back_controller.verify_sold_tickets(event, sold_tickets):
                 st.success("sale completed successfully")
-            self.back_controller.generate_ticket_pdf(event, buyer_name, buyer_id, f"{buyer_id}.pdf")
-            # Abrir el PDF en el navegador web
-            webbrowser.open_new(f"{buyer_id}.pdf")
+                self.back_controller.control_tickets_available(event, ticket_type, ticket_quantity)
+                event.bool_sold_ticket[ticket_type] = True
+                self.back_controller.generate_ticket_pdf(event, sold_tickets, f"{buyer_id}.pdf")
+                # Abrir el PDF en el navegador web
+                webbrowser.open_new(f"{buyer_id}.pdf")
+
 
     def verify_access(self, event, buyer_id):
         sold_ticket = self.back_controller.get_sold_ticket_by_id(event, buyer_id)
@@ -182,3 +212,15 @@ class GUIController:
             st.success(f"Access granted, welcome {sold_ticket.buyer_name}")
         else:
             st.error(f"Access denied, {buyer_id} is not registered")
+
+    def verify_amount_tickets(self, event, ticket_type, ticket_quantity):
+
+        amount_tickets_available = event.tickets[0].amount
+        if ticket_type == "regular":
+            amount_tickets_available = event.tickets[1].amount
+
+        if ticket_quantity > amount_tickets_available:
+            st.error(f"The amount of {ticket_type} tickets requested exceeds the available amount")
+            return False
+        else:
+            return True

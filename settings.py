@@ -91,8 +91,13 @@ PHILANTHROPIC_EVENT_FIELDS = {
     "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
 }
 
+TICKET_EVENT_FIELDS = {
+    "price": {"type": "number", "label": "Price"},
+    "amount": {"type": "number", "label": "Amount"},
+}
 
-
+OPTIONS_MARKETING = ["Social Media", "Friends/Family", "Advertisement", "Other"]
+OPTIONS_METHOD = ["Credit Card", "Debit Card", "Cash"]
 
 bar_event_data = {
     'name': 'Test Bar Event',

@@ -170,7 +170,7 @@ def draw_edit_event_interface(gui_controller, searched_event):
             new_value = st.selectbox("New value", event_fields[selected_field]["options"])
         else:
             # Creando un campo de entrada para el nuevo valor
-            new_value = draw_input_field_edit(selected_field, event_fields[selected_field])
+            new_value = gui_controller.draw_input_field_edit(selected_field, event_fields[selected_field])
         st.info("Press search again to notice the changes")
     with apply_button_col:
         st.write("")
@@ -194,15 +194,4 @@ def draw_delete_event_interface(gui_controller, searched_event):
 
 
 # Función para dibujar el campo de entrada para editar un evento basado en su tipo
-def draw_input_field_edit(field, config):
-    if config["type"] == "text":
-        return st.text_input("New value")
-    elif config["type"] == "date":
-        return st.date_input("New value")
-    elif config["type"] == "time":
-        return st.time_input("New value")
-    elif config["type"] == "number":
-        if field == "capacity":
-            return st.number_input("New value", step=1)
-        else:
-            return st.number_input("New value")
+
