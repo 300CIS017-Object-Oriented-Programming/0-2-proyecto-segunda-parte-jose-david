@@ -1,10 +1,15 @@
 import streamlit as st
-from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 from streamlit_option_menu import option_menu
+import pandas as pd
+import plotly.express as px
+
 from view.event_manager_view import draw_create_event_interface, draw_events_library, \
     draw_searched_event_interface
 from view.ticket_office_view import draw_ticket_management_interface, draw_ticket_sales_management_interface
 from view.access_management_view import draw_register_access_interface
+from view.home_view import draw_dashboard
+from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
+
 
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
 
@@ -31,11 +36,109 @@ def draw_option_menu(gui_controller):
 
 
 # Main pages of the GUI
-def draw_home_page():
+def draw_home_page(gui_controller):
     """On the home page, the user is welcomed and the main dashboard of the application is managed"""
+    if "dashboard" not in st.session_state:
+        st.session_state.dashboard = False
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_page'>WELCOME !</div>", unsafe_allow_html=True)
     st.write("Welcome to Humor Hub, here you can manage events, ticketing, access and reports.")
+
+    # dash board
+
+    st.markdown("## Dashboard")
+    st.text("put a date range")
+    empty, start_date_col, end_date_col, button_col, empty = st.columns([2, 1, 1, 1, 2])
+    with start_date_col:
+        star_date = st.date_input("star_date")
+    with end_date_col:
+        end_date = st.date_input("end_date")
+    with button_col:
+        st.write("")
+        st.write("")
+        if st.button("Show"):
+            st.session_state.dashboard = True
+    empty, dashboard_col = st.columns([1, 4])
+    if st.session_state.dashboard:
+        draw_dashboard(gui_controller, star_date, end_date)
+
+
+
+
+
+
+
+    # Supongamos que tienes un DataFrame de pandas 'df' con las columnas 'event_type', 'date' y 'total_income'
+    df = pd.DataFrame({
+        'event_type': ['Bar', 'Theater', 'Philanthropic', 'Bar', 'Theater', 'Philanthropic'],
+        'date': pd.to_datetime(['2024-01-01', '2024-01-01', '2024-01-01', '2024-02-01', '2024-02-01', '2024-02-01']),
+        'total_income': [1000, 2000, 3000, 1500, 2500, 3500]
+    })
+
+    # Filtrar el DataFrame por el rango de fechas
+    start_date = '2024-01-01'
+    end_date = '2024-02-01'
+    mask = (df['date'] > start_date) & (df['date'] <= end_date)
+    df = df.loc[mask]
+
+    # Crear el gráfico de barras con Plotly
+    fig = px.bar(df, x='event_type', y='total_income', color='event_type', title='Total income by event type')
+
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig)
+    # ---------------------------------------
+    df = pd.DataFrame({
+        'date': pd.date_range(start='2024-01-01', periods=12, freq='M'),
+        'value': [2, 1, 3, 4, 3, 4, 5, 4, 5, 6, 7, 8]
+    })
+
+    fig = px.line(df, x='date', y='value', title='Line Chart Example')
+    st.plotly_chart(fig)
+    # ---------------------------------------
+    df = pd.DataFrame({
+        'x': [1, 2, 3, 4, 5],
+        'y': [2, 1, 3, 4, 3]
+    })
+
+    fig = px.scatter(df, x='x', y='y', title='Scatter Plot Example')
+    st.plotly_chart(fig)
+
+    # ---------------------------------------
+
+    df = pd.DataFrame({
+        'fruit': ['apple', 'banana', 'orange'],
+        'count': [10, 15, 7]
+    })
+
+    fig = px.pie(df, values='count', names='fruit', title='Pie Chart Example')
+    st.plotly_chart(fig)
+
+    # ---------------------------------------
+    df = pd.DataFrame({
+        'value': [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+    })
+
+    fig = px.histogram(df, x='value', nbins=4, title='Histogram Example')
+    st.plotly_chart(fig)
+
+    # ---------------------------------------
+    df = pd.DataFrame({
+        'value': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        'group': ['A', 'A', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'B']
+    })
+
+    fig = px.box(df, x='group', y='value', title='Box Plot Example')
+    st.plotly_chart(fig)
+
+    df = pd.DataFrame({
+        'date': pd.date_range(start='2024-01-01', periods=12, freq='M'),
+        'value1': [2, 1, 3, 4, 3, 4, 5, 4, 5, 6, 7, 8],
+        'value2': [3, 2, 4, 5, 4, 5, 6, 5, 6, 7, 8, 9]
+    })
+
+    fig = px.area(df, x='date', y=['value1', 'value2'], title='Area Chart Example')
+
+    st.plotly_chart(fig)
 
 
 def draw_event_manager_page(gui_controller):
