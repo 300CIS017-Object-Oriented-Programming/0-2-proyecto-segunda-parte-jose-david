@@ -11,6 +11,7 @@ from settings import BAR_EVENT_FIELDS, PHILANTHROPIC_EVENT_FIELDS, THEATER_EVENT
 from models.artist import Artist
 import random
 import string
+from models.report import Report
 
 
 class BackController:
@@ -227,9 +228,9 @@ class BackController:
         return datetime.now().date()
 
     def control_tickets_available(self, event, ticket_type, ticket_sale_quantity):
-        if ticket_type == "presale":
+        if ticket_type == "presale" or ticket_type == "complementary":
             event.tickets[0].amount_available -= ticket_sale_quantity
-        elif ticket_type == "regular":
+        elif ticket_type == "regular" or ticket_type == "complementary":
             event.tickets[1].amount_available -= ticket_sale_quantity
 
     def register_access(self, event, ticket_code):
@@ -244,16 +245,25 @@ class BackController:
         event_types = [event.type for event in self.events.values() if start_date <= event.date <= end_date]
         return event_types
 
-    def get_money_by_event_type(self, event_type):
-        total_sales = 0
+    def get_events_in_date_range(self, start_date, end_date):
+        # Filtrar el diccionario de eventos para incluir solo aquellos eventos cuya fecha cae dentro del rango
+        # especificado
+        filtered_events = {date: event for date, event in self.events.items() if start_date <= date <= end_date}
+        return filtered_events
+    def get_all_events(self):
+        # Devuelve una copia del diccionario de eventos para evitar la manipulación directa
+        return self.events.copy()
 
-        for event in self.events.values():
-            if event.type == event_type and event.state != "to sold tickets":
-                for ticket_type, sold_tickets in event.sold_tickets.items():
-                    ticket_price = event.tickets[0].price if ticket_type == "presale" else event.tickets[1].price
-                    total_sales += ticket_price * len(sold_tickets)
 
-        return total_sales
+    # --------------------------------------------------------------------------------------------------------------
+
+    # Controlar las boletas vendidas por tipo de evento
+
+
+
+
+
+
 
 
 

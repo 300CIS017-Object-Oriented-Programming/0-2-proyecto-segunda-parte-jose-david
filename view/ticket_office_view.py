@@ -118,17 +118,18 @@ def draw_ticket_sales_management_interface(gui_controller):
     else:
         with (ticket_type_col):
             ticket_type = st.selectbox("Select the type of ticket", ["presale", "regular"])
-        if gui_controller.back_controller.get_event_ticket(ticket_type, event_to_sale_ticket) is None:
-            st.info(f"The {ticket_type} ticket has not been assigned yet")
 
-        with button_col:
-            st.write(" ")
-            st.write(" ")
-            if st.button("Select"):
-                st.session_state.sale_ticket = True
+            with button_col:
+                st.write(" ")
+                st.write(" ")
+                if st.button("Select"):
+                    st.session_state.sale_ticket = True
 
         if st.session_state.sale_ticket:
-            draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, ticket_type)
+            if gui_controller.back_controller.get_event_ticket(ticket_type, event_to_sale_ticket) is None:
+                st.info(f"The {ticket_type} ticket has not been assigned yet")
+            else:
+                draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, ticket_type)
             # view/ticket_office_view
 
     if st.button("Close", key="close_ticket_sales_management"):
@@ -170,6 +171,9 @@ def draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, clo
     if "confirm_sale" not in st.session_state:
         st.session_state.confirm_sale = False
     empty, form_col, empty = st.columns([0.8, 2.5, 1])  # Columns
+    # Asignar el valor del tickete correspondiente
+    ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
+    ticket_price = ticket.price
 
     with form_col:
         with st.form(key='sale_ticket_formefasfaef'):
@@ -185,8 +189,7 @@ def draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, clo
             payment_method = st.radio("Select the payment method", OPTIONS_METHOD)
 
             complimentary_ticket = st.radio("Complimentary ticket", ["Yes", "No"])
-            if complimentary_ticket == "Yes":
-                price_ticket = 0
+
             # When the user presses the 'Submit' button, the form values are sent
             submit_button = st.form_submit_button(label="Sale")
 
@@ -196,7 +199,8 @@ def draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, clo
             if st.session_state.confirm_sale:
                 if gui_controller.verify_amount_tickets(event_to_sale_ticket, type_ticket, ticket_quantity):
                     if complimentary_ticket == "Yes":
-                        st.write("Complimentary ticket")
-                    gui_controller.ticket_sale(event_to_sale_ticket, type_ticket, buyer_name, buyer_id, buyer_email,
-                                               buyer_age, ticket_quantity)
-
+                        type_ticket = 'complementary'
+                        ticket_price = 0
+                    gui_controller.ticket_sale(event_to_sale_ticket, type_ticket, ticket_quantity, ticket_price
+                                               , payment_method, buyer_name, buyer_id, buyer_email, buyer_age,
+                                               how_did_you_know)

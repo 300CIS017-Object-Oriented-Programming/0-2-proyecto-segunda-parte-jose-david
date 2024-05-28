@@ -31,7 +31,7 @@ class GUIController:
         """
         draw_option_menu(self)
         if self.run_page == 'home':
-            draw_home_page()
+            draw_home_page(self)
         elif self.run_page == 'event_manager':
             draw_event_manager_page(self)
         elif self.run_page == 'ticket_office':
@@ -184,27 +184,50 @@ class GUIController:
 
         return other_amount
 
-    def ticket_sale(self, event, ticket_type, buyer_name, buyer_id, buyer_email, buyer_age, ticket_quantity):
+    def ticket_sale(self, event, ticket_type, ticket_quantity, ticket_price, payment_method, buyer_name, buyer_id,
+                    buyer_email, buyer_age, how_did_you_know):
 
-        if (buyer_name.strip() == "" or buyer_id.strip() == "" or buyer_email.strip() == "" or buyer_age == ""
+        if (buyer_name.strip() == "" or buyer_id.strip() == "" or buyer_email.strip() == "" or buyer_age <= 0
                 or ticket_quantity <= 0):
             st.warning("Please, complete all the fields")
 
         else:
 
+            # Creamos el ticket vendido para guardarlo en los datos
             sold_tickets = self.back_controller.create_sold_tickets(event, ticket_type, buyer_name, buyer_id,
                                                                     buyer_email, buyer_age, ticket_quantity)
-            if self.back_controller.verify_sold_tickets(event, sold_tickets):
+
+            if self.back_controller.verify_sold_tickets(event, sold_tickets):  # Los verificamos
                 st.success("sale completed successfully")
+
+                # Controlar los tickets disponibles tomando en cuenta los tickes que se pidieron comprar
                 self.back_controller.control_tickets_available(event, ticket_type, ticket_quantity)
+
+                # Acualizar la variable para controlar que ya se incio la venta de boletas de ese tipo con almenos una
                 event.bool_sold_ticket[ticket_type] = True
+
+                # Manejar los datos del reporte del evento
+                event.report_data.increment_sold_by_ticket_type(ticket_type, ticket_quantity)
+                event.report_data.increment_income_by_ticket_type(ticket_type, (ticket_price * ticket_quantity))
+                event.report_data.increment_income_by_payment_method(payment_method, (ticket_price * ticket_quantity))
+                event.report_data.add_buyer_info(buyer_age, how_did_you_know, payment_method, buyer_email)
+                event.report_data.increment_income_by_event_type(event.type, (ticket_price * ticket_quantity))
+
+                print(event.report_data.tickets_sold_by_ticket_type)
+                print(event.report_data.total_income_by_ticket_type)
+                print(event.report_data.total_income_by_payment_method)
+                print(event.report_data.buyers_demographic)
+                print(event.report_data.income_by_event_type)
+
                 self.back_controller.generate_ticket_pdf(event, sold_tickets, f"{buyer_id}.pdf")
+
                 # Abrir el PDF en el navegador web
                 webbrowser.open_new(f"{buyer_id}.pdf")
+
+                # Actualizacion de las paginas despues de una venta
                 st.session_state.sale_ticket_form = False
                 st.session_state.confirm_sale = False
                 st.rerun()
-
 
     def verify_access(self, event, ticket_code):
         sold_ticket = self.back_controller.get_sold_ticket_by_code(event, ticket_code)
@@ -227,8 +250,11 @@ class GUIController:
         else:
             return True
 
-    def close_ticket_sale(self,event_to_sale_ticket, type_ticket):
+    def close_ticket_sale(self, event_to_sale_ticket, type_ticket):
         event_to_sale_ticket.bool_sold_out[type_ticket] = True
         st.session_state.sale_ticket_form = False
         st.session_state.sale_ticket = False
         st.rerun()
+
+
+"""------------------------------------------------------------------------------------------------------------------"""

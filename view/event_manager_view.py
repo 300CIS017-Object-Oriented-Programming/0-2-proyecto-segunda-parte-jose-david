@@ -66,7 +66,7 @@ def draw_searched_event_interface(gui_controller, event_date_consult, close_butt
             else:
                 draw_edit_event_interface(gui_controller, searched_event)
         if st.session_state.delete_event_interface:
-            st.sesion_state.edit_event_interface = False
+            st.session_state.edit_event_interface = False
             draw_delete_event_interface(gui_controller, searched_event)
     else:
         st.error("No event was found on the selected date.")

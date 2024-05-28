@@ -97,7 +97,7 @@ TICKET_EVENT_FIELDS = {
 }
 
 OPTIONS_MARKETING = ["Social Media", "Friends/Family", "Advertisement", "Other"]
-OPTIONS_METHOD = ["Credit Card", "Debit Card", "Cash"]
+OPTIONS_METHOD = ["credit_card", "debit_card", "cash"]
 
 bar_event_data = {
     'name': 'Test Bar Event',

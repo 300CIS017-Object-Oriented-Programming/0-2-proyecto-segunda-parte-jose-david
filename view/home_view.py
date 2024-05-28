@@ -28,6 +28,21 @@ def draw_dashboard(gui_controller, start_date, end_date):
             # Mostrar el gráfico en Streamlit
             st.plotly_chart(fig, use_container_width=True)
     with graph2:
-        pass
+        # Obtener los eventos en el rango de fechas
+        events = gui_controller.back_controller.get_events_in_date_range(start_date, end_date)
 
+        # Inicializar un DataFrame con ceros para cada tipo de evento
+        total_income_by_event_type = pd.DataFrame({'bar': [0], 'philanthropic': [0], 'theater': [0]})
 
+        # Para cada evento, obtener el objeto Report y sumar los ingresos por tipo de evento
+        for event in events.values():
+            report = event.report_data
+            total_income_by_event_type.update(report.income_by_event_type)
+
+        # Mostrar los ingresos totales por tipo de evento
+        for event_type in total_income_by_event_type.columns:
+            total_income = total_income_by_event_type.loc[0, event_type]
+            if total_income == 0:
+                st.write(f"No hay ingresos para el tipo de evento {event_type}.")
+            else:
+                st.write(f"Los ingresos totales para el tipo de evento {event_type} son: {total_income}")
