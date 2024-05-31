@@ -9,26 +9,23 @@ import datetime
 
 class GUIController:
     """
-    The GUIController class is responsible for managing the user interface of the application.
-    It interacts with the BackController to handle the business logic and updates the interface accordingly.
+    Clase que controla la interfaz gráfica de la aplicación. Cuando dibujar cada pagina y manejar la interacción
+    con el usuario.
     """
 
     def __init__(self):
-        """
-        Initializes the GUIController with a BackController instance and the current page to be displayed.
-        """
+
         if 'my_state' not in st.session_state:
-            self.back_controller = BackController()
+            self.back_controller = BackController()  # Crear una instancia del controlador de la aplicación
             self.run_page = 'home'
-            st.session_state['my_state'] = self
+            st.session_state['my_state'] = self  # Guardar el estado de la aplicación en la sesión
         else:
+            # Recuperar el estado de la aplicación de la sesión
             self.back_controller = st.session_state.my_state.back_controller
             self.run_page = st.session_state.my_state.run_page
 
     def main(self):
-        """
-        Main method that handles the navigation between different pages of the application.
-        """
+        """ Maneja cuando se debe dibujar cada página de la aplicación. """
         draw_option_menu(self)
         if self.run_page == 'home':
             draw_home_page(self)
@@ -39,10 +36,11 @@ class GUIController:
         elif self.run_page == 'access_management':
             draw_access_management_page(self)
 
+    """ Event manager page """
+
     def valid_event_data(self, event_data, event_type, fields_to_validate=None):
-        """
-        Checks if the event data is valid.
-        """
+        """ Valida los datos de un evento.
+        al mismo tiempo maneja la interaccion con el usuario si los datos no son válidos."""
 
         event_fields = self.back_controller.choose_event_fields(event_type)
 
@@ -52,7 +50,7 @@ class GUIController:
 
         # Verificar que los datos no estén vacíos
         for field in fields_to_validate:
-            if field != "state":  # Skip the state field
+            if field != "state":  # El campo state no se valida
                 value = event_data.get(field)
                 if not value:
                     st.error(f"El campo {field} no puede estar vacío.")
@@ -81,21 +79,15 @@ class GUIController:
         return True
 
     def create_event(self, event_type, event_data):
-        """
-       Creates a new event of the specified type with the provided data.
-       It communicates with the BackController to create the event and displays a success or error message
-       based on the result.
-       """
+        """  Manneja la interaccion con el usuario al crear el evento validando los datos """
+
         if self.valid_event_data(event_data, event_type):
             self.back_controller.create_event(event_type, **event_data)
             st.success("event created successfully")
 
     def edit_event(self, event, new_value, field):
-        """
-        Edits the specified field of an existing event with a new value.
-        It communicates with the BackController to edit the event and displays a success or error message
-        based on the result.
-        """
+        """ Edita un campo de un evento y actualiza la interfaz. """
+
         # Crear una copia de los datos actuales del evento
         event_data = vars(event).copy()
 
@@ -111,17 +103,17 @@ class GUIController:
             st.success("Evento editado con éxito")
 
     def delete_event(self, event):
-        """
-        Deletes the specified event.
-        It communicates with the BackController to delete the event and updates the interface accordingly.
-        """
+        """ Elimina un evento y actualiza la interfaz. """
 
         self.back_controller.delete_event(event)
+
         if not self.back_controller.event_exists(event.date):
             st.session_state.delete_event_interface = False
             st.rerun()
 
     def draw_input_field_edit(self, field, config):
+        """ Dibuja un campo de entrada para editar un evento. """
+
         if config["type"] == "text":
             return st.text_input("New value")
         elif config["type"] == "date":
@@ -134,11 +126,12 @@ class GUIController:
             else:
                 return st.number_input("New value")
 
-    def valid_ticket_fields(self, other_amount, new_amount, price, ticket_type, event):
+    # -----------------------------------------------------------------------------------------------
 
-        """
-        Checks if the fields to create a ticket are valid.
-        """
+    """ Ticket office page """
+
+    def valid_ticket_fields(self, other_amount, new_amount, price, ticket_type, event):
+        """ Valida los campos de un ticket. """
 
         valid_fields = True
         if ticket_type == "philanthropic" and price != 0:
@@ -156,6 +149,8 @@ class GUIController:
         return valid_fields
 
     def edit_ticket_event_gui(self, event, ticket_type, new_value, field):
+        """ Edita un ticket de un evento y actualiza la interfaz. """
+
         ticket = self.back_controller.get_event_ticket(ticket_type, event)
         other_amount = self.get_other_amount(event, ticket.type_ticket)
 
@@ -229,17 +224,15 @@ class GUIController:
                 st.session_state.confirm_sale = False
                 st.rerun()
 
-    def verify_access(self, event, ticket_code):
-        sold_ticket = self.back_controller.get_sold_ticket_by_code(event, ticket_code)
-        if sold_ticket is not None:
-            st.success(f"Access granted, welcome {sold_ticket.buyer_name}")
-            return True
-        else:
-            st.error(f"Access denied, {ticket_code} is not registered")
-            return False
+    def close_ticket_sale(self, event_to_sale_ticket, type_ticket):
+        """ Cierra la venta de boletas de un evento.  """
+        event_to_sale_ticket.bool_sold_out[type_ticket] = True
+        st.session_state.sale_ticket_form = False
+        st.session_state.sale_ticket = False
+        st.rerun()
 
     def verify_amount_tickets(self, event, ticket_type, ticket_quantity):
-
+        """ Verifica si la cantidad de boletas solicitadas no excede la cantidad disponible. """
         amount_tickets_available = event.tickets[0].amount
         if ticket_type == "regular":
             amount_tickets_available = event.tickets[1].amount
@@ -250,11 +243,16 @@ class GUIController:
         else:
             return True
 
-    def close_ticket_sale(self, event_to_sale_ticket, type_ticket):
-        event_to_sale_ticket.bool_sold_out[type_ticket] = True
-        st.session_state.sale_ticket_form = False
-        st.session_state.sale_ticket = False
-        st.rerun()
+    # -----------------------------------------------------------------------------------------------
 
+    """ Access management page """
 
-"""------------------------------------------------------------------------------------------------------------------"""
+    def verify_access(self, event, ticket_code):
+        """ Verifica si el código de un ticket es válido. """
+        sold_ticket = self.back_controller.get_sold_ticket_by_code(event, ticket_code)
+        if sold_ticket is not None:
+            st.success(f"Access granted, welcome {sold_ticket.buyer_name}")
+            return True
+        else:
+            st.error(f"Access denied, {ticket_code} is not registered")
+            return False

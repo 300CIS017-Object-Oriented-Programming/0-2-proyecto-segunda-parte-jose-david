@@ -10,6 +10,7 @@ from view.access_management_view import draw_register_access_interface
 from view.home_view import draw_dashboard
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 
+
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
 
 
@@ -22,6 +23,18 @@ def draw_option_menu(gui_controller):
         menu = option_menu(
             menu_title="Menu",
             options=["Home", "Events", "Ticket Office", "Access"],
+            icons=["house-fill", "calendar2-check-fill", "credit-card-fill", "person-check-fill"],
+            menu_icon='list-ul',
+            styles={
+                "icon": {
+                    "color": "wihte",
+                    "font-size": "18px"
+                },
+                "nav-link-selected": {
+
+                    "background-color": "#ff8906"
+                }
+            }
         )
     # Depending on the selected option in the menu, set the current page
     if menu == "Home":
@@ -40,8 +53,14 @@ def draw_home_page(gui_controller):
     if "dashboard" not in st.session_state:
         st.session_state.dashboard = False
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
-    st.markdown("# <div class='title_main_page'>WELCOME !</div>", unsafe_allow_html=True)
-    st.write("Welcome to Humor Hub, here you can manage events, ticketing, access and reports.")
+
+    st.markdown("# <div class='title_main_page'>HOME PAGE</div>", unsafe_allow_html=True)
+    st.markdown("""
+    # 🎉 Welcome to Humor Hub 🎉
+    Here you can manage events, ticket sales, access, and reports.
+
+    Use the menu on the left to navigate through the different sections of the application. Enjoy your stay!
+    """, unsafe_allow_html=True)
 
     # dash board
 
@@ -55,8 +74,16 @@ def draw_home_page(gui_controller):
     with button_col:
         st.write("")
         st.write("")
-        if st.button("Show"):
+        if st.button("show dashboard"):
             st.session_state.dashboard = True
+
+        m = st.markdown("""
+               <style>
+               div.stButton > button:first-child {
+                   background-color: #cc7000;
+               }
+               </style>""", unsafe_allow_html=True)
+
     empty, dashboard_col = st.columns([1, 4])
     if st.session_state.dashboard:
         draw_dashboard(gui_controller, star_date, end_date)
@@ -76,9 +103,16 @@ def draw_event_manager_page(gui_controller):
     if "show_event_library" not in st.session_state:
         st.session_state.show_event_library = False
 
+    m = st.markdown("""
+                   <style>
+                   div.stButton > button:first-child {
+                       background-color: #cc7000;
+                   }
+                   </style>""", unsafe_allow_html=True)
+
     # Titulo
-    st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
-    st.markdown("# <div class='title_main_functions'>Event Manager</div>", unsafe_allow_html=True)
+    st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
+    st.markdown("# <div class='title_main_page'>Event Manager</div>", unsafe_allow_html=True)
 
     """ Crear evento """
 
@@ -132,14 +166,21 @@ def draw_event_manager_page(gui_controller):
 def draw_ticket_office_page(gui_controller):
     """On this page the user can manage the ticketing of the events and the sales"""
 
+    m = st.markdown("""
+                   <style>
+                   div.stButton > button:first-child {
+                       background-color: #cc7000;
+                   }
+                   </style>""", unsafe_allow_html=True)
+
     # Initialize session state variables if they don't exist
     if "ticket_sale_management" not in st.session_state:
         st.session_state.ticket_sale_management = False
     if "ticket_management" not in st.session_state:
         st.session_state.ticket_management = False
 
-    st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
-    st.markdown("# <div class='title_main_functions'>Gestor de boletería</div>", unsafe_allow_html=True)
+    st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
+    st.markdown("# <div class='title_main_page'>TICKET OFFICE</div>", unsafe_allow_html=True)
     empty, management_col, sales_col, empty = st.columns([1, 1, 1, 1])
 
     """ Tickets management """
@@ -167,6 +208,13 @@ def draw_ticket_office_page(gui_controller):
 def draw_access_management_page(gui_controller):
     if "access_management" not in st.session_state:
         st.session_state.access_management = False
+
+    m = st.markdown("""
+                   <style>
+                   div.stButton > button:first-child {
+                       background-color: #cc7000;
+                   }
+                   </style>""", unsafe_allow_html=True)
 
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Manejo de ingreso</div>", unsafe_allow_html=True)

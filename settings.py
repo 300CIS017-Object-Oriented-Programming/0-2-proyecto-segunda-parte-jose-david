@@ -1,10 +1,17 @@
+import streamlit as st
+
 TITLE_MAIN_PAGE = """
 <style>
 .title_main_page {
     text-align: center;
-    font-size: 60px;
+    font-size: 80px;
     font-family: 'Courier New', Courier, monospace;
-    text-shadow: 2px 2px black;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    background: -webkit-linear-gradient(left, #ffd803, #ff5733);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 </style>
 
@@ -113,6 +120,7 @@ bar_event_data = {
     'artist_payment': 500
 
 }
+
 
 theater_event_data = {
     'name': 'Test Theater Event',
