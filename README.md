@@ -4,6 +4,7 @@
 # Diagrama de clases UML 
 
 ```mermaid
+   
    classDiagram
     class BackController {
         - Events
@@ -13,7 +14,7 @@
         + get_event_by_date(date)
         + choose_event_fields()
         + event_exists()
-        + create_event
+        + create_event()
         + edit_event( event, field, new_value)
         + delete_event(event)
         + create_ticket(self, event, ticket_type, price, amount)
@@ -23,7 +24,7 @@
         + create_sold_tickets()
         + generate_ticket_code()
         + register_access()
-        + Gettes
+        + Getters()
         
     }
     class GUIController {
@@ -41,61 +42,88 @@
         
     }
     class Event {
-        self.type 
-        self.name 
-        self.date 
-        self.opening_time 
-        self.show_time 
-        self.location 
-        self.address 
-        self.city 
-        self.artists 
-        self.capacity 
-        self.state 
-
-        self.tickets  
-        self.sold_tickets 
-        self.report_data
-        self.bool_sold_ticket 
-
-       
-        self.bool_sold_out 
+        - type 
+        - name 
+        - date 
+        - opening_time 
+        - show_time 
+        - location 
+        - address 
+        - city 
+        - artists 
+        - capacity 
+        - state
+        - tickets  
+        - sold_tickets 
+        - report_data
+        - bool_sold_ticket
+        - bool_sold_out 
     }
     class BarEvent {
-        -bar_profit = bar_profit
-        -artist_payment = artist_payment
+        - bar_profit = bar_profit
+        - artist_payment 
+        
     }
     class PhilanthropicEvent {
         - sponsors = sponsors
-        - sponsorship_amount = sponsorship_amount
+        - sponsorship_amount 
     }
     class TheaterEvent {
-        - rental_cost = rental_cos
+        - rental_cost 
     }
     class Ticket {
-        +start()
+        - price 
+        - type_ticket 
+        - amount 
+        - amount_available  
+    }
+    class SoldTicket {
+        - code 
+        - ticket_type 
+        - buyer_id 
+        - buyer_name 
+        - buyer_email 
+    }
+    class Report {
+        - tickets_sold_by_ticket_type 
+        - total_income_by_ticket_type 
+        - total_income_by_payment_method 
+        - buyers_demographic 
+        - income_by_event_type 
+
+        + increment_sold_by_ticket_type(self, ticket_type, amount)
+        + increment_income_by_ticket_type(self, ticket_type, income):
+        + increment_income_by_payment_method(self, payment_method, income)
+        + add_buyer_info(self, age, how_did_you_know, payment_method, email)
+        + increment_income_by_event_type(self, event_type, income)
+    }
+    class Artist {
+        - name
+        - events_participated
     }
     class EventView {
-        + draw_create_event_interface(gui_controller, event_type, event_fields)
+        + draw_create_event_interface(gui_controller)
         + draw_input_field(field, config)
-        + display_event(gui_controller, event, event_type)
+        + display_event(gui_controller)
     }
     class TicketView {
-        
+        + draw_ticket_management_interface(gui_controller)
+        + draw_assign_ticket_price_interface(gui_controller)
+        + draw_edit_ticket_interface(gui_controller)
+        + draw_ticket_sales_management_interface(gui_controller)
+        + draw_sale_ticket_interface(gui_controller)
+        + draw_sale_ticket_form(gui_controller)
     }
-    class ReportView {
-        
-    }
+    
     class AccessView {
-        
+        + draw_register_access_interface(gui_controller)
     }
     class MainView {
         + draw_option_menu(gui_controller)
-        + draw_home_page()
+        + draw_home_page(gui_controller)
         + draw_event_manager_page(gui_controller)
-        + draw_ticket_office_page()
-        + draw_access_management_page()
-        + draw_reports_page()
+        + draw_ticket_office_page(gui_controller)
+        + draw_access_management_page(gui_controller)
     }
     class App {
         + main()
@@ -105,10 +133,15 @@
     GUIController --> BackController: has
     MainView ..> EventView: uses
     MainView ..> TicketView: uses
-    MainView ..> ReportView: uses
     MainView ..> AccessView: uses
     BackController o-- Event: has
+    BackController o-- Artist: has
     Event <|-- BarEvent 
     Event <|-- PhilanthropicEvent 
     Event <|-- TheaterEvent 
+    Event o-- Ticket: has
+    Event o-- SoldTicket: has
+    Event --> Report: has
+    
+    
 ```

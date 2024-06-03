@@ -209,13 +209,6 @@ def draw_access_management_page(gui_controller):
     if "access_management" not in st.session_state:
         st.session_state.access_management = False
 
-    m = st.markdown("""
-                   <style>
-                   div.stButton > button:first-child {
-                       background-color: #cc7000;
-                   }
-                   </style>""", unsafe_allow_html=True)
-
     st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_functions'>Manejo de ingreso</div>", unsafe_allow_html=True)
 

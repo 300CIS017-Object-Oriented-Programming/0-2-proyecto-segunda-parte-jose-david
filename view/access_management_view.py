@@ -3,7 +3,7 @@ import streamlit as st
 
 def draw_register_access_interface(gui_controller, event_today, close_button):
     empy, info_col, code_input_col, verify_button_col, empty = st.columns([1, 1, 1, 1, 1])
-    if not event_today.bool_sold_out["presale"] and not event_today.bool_sold_out["regular"]:
+    if event_today.state != "sold out":
         st.error("The ticket office for the event is still active. Close the ticket sales to register the entry")
     elif len(event_today.sold_tickets) == 0:
         st.success("All event entries registered.")

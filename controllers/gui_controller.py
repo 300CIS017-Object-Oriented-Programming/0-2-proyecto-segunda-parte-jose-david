@@ -162,7 +162,7 @@ class GUIController:
             return
         else:
             self.back_controller.update_ticket(ticket, field, new_value)
-            st.success("Ticket editado con éxito")
+            st.success("Ticket edit successfully")
 
     def assign_ticket_to_event(self, event, ticket_type, price, new_amount):
 
@@ -182,21 +182,25 @@ class GUIController:
     def ticket_sale(self, event, ticket_type, ticket_quantity, ticket_price, payment_method, buyer_name, buyer_id,
                     buyer_email, buyer_age, how_did_you_know):
 
+        #  Verificaciones de la informacion obtenida del formulario de venta de boletas
         if (buyer_name.strip() == "" or buyer_id.strip() == "" or buyer_email.strip() == "" or buyer_age <= 0
                 or ticket_quantity <= 0):
             st.warning("Please, complete all the fields")
 
         else:
-
             # Creamos el ticket vendido para guardarlo en los datos
             sold_tickets = self.back_controller.create_sold_tickets(event, ticket_type, buyer_name, buyer_id,
                                                                     buyer_email, buyer_age, ticket_quantity)
 
-            if self.back_controller.verify_sold_tickets(event, sold_tickets):  # Los verificamos
+            # Verificamos si el ticket si se creo correctamente en el sistema
+            if self.back_controller.verify_sold_tickets(event, sold_tickets):
                 st.success("sale completed successfully")
 
                 # Controlar los tickets disponibles tomando en cuenta los tickes que se pidieron comprar
                 self.back_controller.control_tickets_available(event, ticket_type, ticket_quantity)
+
+                # Verifica si las boletas disponibles son cero despues del control para actualizar el estado
+                self.back_controller.update_state_event_to_sold_out(event)
 
                 # Acualizar la variable para controlar que ya se incio la venta de boletas de ese tipo con almenos una
                 event.bool_sold_ticket[ticket_type] = True
@@ -208,12 +212,15 @@ class GUIController:
                 event.report_data.add_buyer_info(buyer_age, how_did_you_know, payment_method, buyer_email)
                 event.report_data.increment_income_by_event_type(event.type, (ticket_price * ticket_quantity))
 
-                print(event.report_data.tickets_sold_by_ticket_type)
-                print(event.report_data.total_income_by_ticket_type)
-                print(event.report_data.total_income_by_payment_method)
-                print(event.report_data.buyers_demographic)
-                print(event.report_data.income_by_event_type)
+                #print(event.report_data.tickets_sold_by_ticket_type)
+                #print(event.report_data.total_income_by_ticket_type)
+                #print(event.report_data.total_income_by_payment_method)
+                #print(event.report_data.buyers_demographic)
+                #print(event.report_data.income_by_event_type)
 
+                print(f" estado del evento: {event.state}")
+
+                # Generamos el PDF de la boleta
                 self.back_controller.generate_ticket_pdf(event, sold_tickets, f"{buyer_id}.pdf")
 
                 # Abrir el PDF en el navegador web
@@ -226,7 +233,19 @@ class GUIController:
 
     def close_ticket_sale(self, event_to_sale_ticket, type_ticket):
         """ Cierra la venta de boletas de un evento.  """
-        event_to_sale_ticket.bool_sold_out[type_ticket] = True
+
+        #  Obtenemos la boleta que se va a cerrar
+        ticket = self.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
+
+        #  Actualizamos su disponibilidad a cero
+        self.back_controller.update_ticket(ticket, "amount_available", 0)
+
+        #  Actualizar que ya se vendio al menos una boleta de ese tipo
+        event_to_sale_ticket.bool_sold_ticket[type_ticket] = True
+
+        #  Actualizar el evento en caso de que se haya vendido todas las boletas
+        self.back_controller.update_state_event_to_sold_out(event_to_sale_ticket)
+
         st.session_state.sale_ticket_form = False
         st.session_state.sale_ticket = False
         st.rerun()

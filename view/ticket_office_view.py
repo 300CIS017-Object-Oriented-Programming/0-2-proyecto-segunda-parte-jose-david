@@ -144,7 +144,7 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
     col1, col2, col3, col4 = st.columns([0.8, 1, 1.5, 1])  # Columns
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
 
-    if ticket.amount_available == 0 or event_to_sale_ticket.bool_sold_out[type_ticket]:
+    if ticket.amount_available == 0:
         st.info(f"{type_ticket} tickets are sold out")
     else:
         with col2:
