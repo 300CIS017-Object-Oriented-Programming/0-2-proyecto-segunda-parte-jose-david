@@ -212,14 +212,6 @@ class GUIController:
                 event.report_data.add_buyer_info(buyer_age, how_did_you_know, payment_method, buyer_email)
                 event.report_data.increment_income_by_event_type(event.type, (ticket_price * ticket_quantity))
 
-                print(event.report_data.tickets_sold_by_ticket_type)
-                print(event.report_data.total_income_by_ticket_type)
-                print(event.report_data.total_income_by_payment_method)
-                print(event.report_data.buyers_demographic)
-                print(event.report_data.income_by_event_type)
-
-                print(f" estado del evento: {event.state}")
-
                 # Generamos el PDF de la boleta
                 self.back_controller.generate_ticket_pdf(event, sold_tickets, f"{buyer_id}.pdf")
 

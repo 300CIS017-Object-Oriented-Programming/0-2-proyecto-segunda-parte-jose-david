@@ -5,20 +5,27 @@ from settings import SEPARATOR
 
 # Función para dibujar la interfaz para crear un evento
 def draw_create_event_interface(gui_controller, event_type, close_button_col):
+    #  Obteniendo los campos del evento seleccionado segun el tipo
     event_fields = gui_controller.back_controller.choose_event_fields(event_type)
+
     # Creando un formulario para el evento
     with st.form(key=f'{event_type}_form'):
-        # Creando dos columnas para el formulario
+
         col1, col2 = st.columns(2)
+
         # Dividiendo los campos del evento en dos mitades
         half = len(event_fields) // 2
+
+        # Creando una lista de campos
         fields = list(event_fields.items())
+
         # Mostrando la primera mitad de los campos en la primera columna
         for i in range(half):
             field, config = fields[i]
             if field != "state":  # Omitir el campo de estado
                 with col1:
                     draw_input_field(field, config)
+
         # Mostrando la segunda mitad de los campos en la segunda columna
         for i in range(half, len(fields)):
             field, config = fields[i]
@@ -45,36 +52,41 @@ def draw_searched_event_interface(gui_controller, event_date_consult, close_butt
         st.session_state.edit_event_interface = False
     if "delete_event_interface" not in st.session_state:
         st.session_state.delete_event_interface = False
-
+    # Obetener el evento buscado
     searched_event = gui_controller.back_controller.get_event_by_date(event_date_consult)
+
     if searched_event is not None:
         display_event(gui_controller, searched_event)
 
-        empty, edit_event_button_col, delete_event_button_col, empty = st.columns([0.9, 1, 1, 1])
+        empty, edit_event_button_col, delete_event_button_col, empty = st.columns([0.9, 1, 1, 1])  # Columnas
 
         with edit_event_button_col:
             if st.button("Edit event"):
                 st.session_state.edit_event_interface = True
                 st.session_state.delete_event_interface = False
+
         with delete_event_button_col:
             if st.button("Delete event"):
                 st.session_state.delete_event_interface = True
                 st.session_state.edit_event_interface = False
 
         if st.session_state.edit_event_interface:
+
             if searched_event.state == "realized":
                 st.error("You cannot edit an event that has already been realized.")
             else:
                 draw_edit_event_interface(gui_controller, searched_event)
+
         if st.session_state.delete_event_interface:
             st.session_state.edit_event_interface = False
-            draw_delete_event_interface(gui_controller, searched_event)
+            draw_delete_event_interface(gui_controller, searched_event)  # view/event_manager_view
     else:
         st.error("No event was found on the selected date.")
     with close_button_col:
         st.write("")  # por motivos esteticos
         st.write("")
-        if st.button('❌', key="close_search_event"):  # FIXME: cambiar a un icono X
+
+        if st.button('❌', key="close_search_event"):
             st.session_state.search_event = False
             st.session_state.edit_event_interface = False  # Cierra la interfaz de edición
             st.session_state.delete_event_interface = False  # Cierra la interfaz de eliminación
@@ -106,7 +118,6 @@ def display_event(gui_controller, event):
     event_fields = gui_controller.back_controller.choose_event_fields(event.type)
     # Creando tres columnas
     col1, col2, col3 = st.columns(3)
-
 
     # Dividiendo los campos en tres listas
     fields = list(event_fields.items())
@@ -162,6 +173,8 @@ def draw_events_library(gui_controller, close_button_col):
 def draw_edit_event_interface(gui_controller, searched_event):
     # Obteniendo los campos del evento buscado
     select_field_col, input_col, apply_button_col = st.columns([1, 1.5, 1.5])
+
+    #  Obteniendo los campos del evento seleccionado segun el tipo
     event_fields = gui_controller.back_controller.choose_event_fields(searched_event.type)
 
     # Creando una lista de opciones para el cuadro de selección

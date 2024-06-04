@@ -4,9 +4,15 @@ import plotly.express as px
 
 
 def draw_dashboard(gui_controller):
+    """ Dibujar el dashboard de la aplicacion """
+
     st.markdown("## Dashboard 📊")
     st.write("put a date range")
+
+    # Columnas
     empty, start_date_col, end_date_col, button_col, close_button_col, empty = st.columns([2, 1, 1, 1, 1, 1])
+
+    # Recibir fechas
     with start_date_col:
         start_date = st.date_input("star_date")
     with end_date_col:
@@ -16,8 +22,6 @@ def draw_dashboard(gui_controller):
         st.write("")
         if st.button("show dashboard"):
             st.session_state.dashboard = True
-
-    empty, dashboard_col = st.columns([1, 4])
 
     if st.session_state.dashboard:
         graph1, graph2 = st.columns([2, 2])
@@ -29,7 +33,7 @@ def draw_dashboard(gui_controller):
             if event_types is None:
                 st.error("No hay eventos disponibles.")
             else:
-                # Aquí puedes continuar con el procesamiento de los tipos de eventos
+                # Crear un DataFrame con los tipos de eventos
                 df = pd.DataFrame({
                     'event_type': event_types,
                 })
@@ -43,6 +47,7 @@ def draw_dashboard(gui_controller):
 
                 # Mostrar el gráfico en Streamlit
                 st.plotly_chart(fig, use_container_width=True)
+
         with graph2:
             # Obtener los eventos en el rango de fechas
             events = gui_controller.back_controller.get_events_in_date_range(start_date, end_date)
@@ -62,6 +67,7 @@ def draw_dashboard(gui_controller):
                     st.write(f"No hay ingresos para el tipo de evento {event_type}.")
                 else:
                     st.write(f"Los ingresos totales para el tipo de evento {event_type} son: {total_income}")
+
         with close_button_col:
             st.write("")
             st.write("")
@@ -91,12 +97,14 @@ def draw_sales_report_interface(gui_controller):
 
     # Crear el primer gráfico: Cantidad de boletas vendidas por tipo
     total_tickets_sold_by_type = total_tickets_sold_by_type.melt(var_name='Ticket Type', value_name='Count')
+
     fig1 = px.bar(total_tickets_sold_by_type, x='Ticket Type', y='Count', title='Tickets Sold by Type')
 
     # Crear columnas para el gráfico y los ingresos totales
-    graph_col, income_col = st.columns([3, 1])
+    graph_col, empty = st.columns([3, 1])
 
     with graph_col:
+        #  Mostrar grafico de barras en Streamlit
         st.plotly_chart(fig1, use_container_width=True)
 
     st.subheader("Total Income by Ticket Type")

@@ -5,11 +5,12 @@ from settings import TICKET_EVENT_FIELDS, OPTIONS_MARKETING, OPTIONS_METHOD
 
 
 def draw_ticket_management_interface(gui_controller, close_button_col):
-    # Initialize session state variables if they don't exist
+    #  Inicializar las variables de estado de la sesión si no existen
     if "edit_ticket" not in st.session_state:
         st.session_state.edit_ticket = False
 
     search_event_col, type_ticket_col = st.columns([1, 1])
+    # Obtener todas las fechas de los eventos para mostrar en el selectbox
     event_dates = gui_controller.back_controller.get_all_event_dates()
 
     with search_event_col:
@@ -23,6 +24,7 @@ def draw_ticket_management_interface(gui_controller, close_button_col):
             # Select the type of ticket
             type_ticket = st.selectbox("Select the type of ticket", ["Select...", "presale", "regular"])
 
+        # Obtener el evento por la fecha
         event_to_management_ticket = gui_controller.back_controller.get_event_by_date(event_date_to_assign_ticket)
 
         if type_ticket != "Select...":
@@ -43,8 +45,12 @@ def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_man
                                        search_event_col, type_event_col):
     if "edit_ticket" not in st.session_state:
         st.session_state.edit_ticket = False
+
+    # Obtener la cantidad de tickets asignados para presale y regular para mostrarle al usuario
     presale_amount = gui_controller.back_controller.get_amount_ticket_assigned("presale", event_to_management_ticket)
     regular_amount = gui_controller.back_controller.get_amount_ticket_assigned("regular", event_to_management_ticket)
+
+    #  Obtener el ticket para el evento
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_management_ticket)
 
     """ Assign ticket """
@@ -63,6 +69,7 @@ def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_man
                 amount = st.number_input("Enter the amount of tickets", step=1)
 
             if st.button("Assign ticket"):
+                #  Asignar el ticket al evento
                 gui_controller.assign_ticket_to_event(event_to_management_ticket, type_ticket, price, amount)
                 st.session_state.edit_ticket = False
 
@@ -72,7 +79,9 @@ def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_man
 
         if st.button("Edit ticket"):
             st.session_state.edit_ticket = True
+
         if st.session_state.edit_ticket:
+            # Dibujar la interfaz para editar el ticket
             draw_edit_ticket_interface(gui_controller, event_to_management_ticket, type_ticket)
 
 
@@ -80,14 +89,16 @@ def draw_edit_ticket_interface(gui_controller, event_to_edit_ticket, ticket_type
     if "confirm_edit" not in st.session_state:
         st.session_state.confirm_edit = False
 
-    select_field_col, input_col, apply_button_col = st.columns([1, 1.5, 1.5])
+    select_field_col, input_col, apply_button_col = st.columns([1, 1.5, 1.5])  # Columnas
+    #  Obtener los campos del ticket del la configuracion en settings.py
     options = [field for field, _ in TICKET_EVENT_FIELDS.items()]
+
     with select_field_col:
         selected_field = st.selectbox("Select the field to edit", options)
     with input_col:
         # Si el campo seleccionado es "state", dibujar un cuadro de selección con los estados permitidos
-
         new_value = gui_controller.draw_input_field_edit(selected_field, TICKET_EVENT_FIELDS[selected_field])
+
     with apply_button_col:
         st.write("")
         st.write("")
@@ -95,6 +106,7 @@ def draw_edit_ticket_interface(gui_controller, event_to_edit_ticket, ticket_type
         if st.button("Apply changes"):
             confirm_edit = True
     if confirm_edit:
+        # Editar el ticket
         gui_controller.edit_ticket_event_gui(event_to_edit_ticket, ticket_type, new_value, selected_field)
 
 
@@ -148,6 +160,7 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
     st.markdown("<br>", unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns([1.2, 1, 1.5, 1])  # Columns
+    # Obtener el ticket del evento
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
 
     if ticket.amount_available == 0:
@@ -156,6 +169,7 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
         with col2:
             st.write(f"Price ticket: {ticket.price} USD")
             st.write(f"Event capacity: {event_to_sale_ticket.capacity}")
+
         with col3:
             if type_ticket == "presale":
                 st.write(f"presale tickets avaliable: {event_to_sale_ticket.tickets[0].amount_available}")
@@ -166,19 +180,23 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
         st.markdown("<br>", unsafe_allow_html=True)
 
         empty, button_sale_col, button_sold_out, close_button, empty = st.columns([1.3, 1, 1, 1, 0.2])  # Columns
+
         with button_sale_col:
             if st.button("Sale ticket"):
                 st.session_state.sale_ticket_form = True
         with button_sold_out:
             if st.button(f"close {type_ticket}"):
+                # Cerrar la venta de tickets
                 gui_controller.close_ticket_sale(event_to_sale_ticket, type_ticket)
         if st.session_state.sale_ticket_form:
+            # Dibujar el formulario de venta de tickets
             draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, close_button)
 
 
 def draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, close_button):
     if "confirm_sale" not in st.session_state:
         st.session_state.confirm_sale = False
+
     empty, form_col, empty = st.columns([0.8, 2.5, 1])  # Columns
     # Asignar el valor del tickete correspondiente
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
@@ -187,29 +205,28 @@ def draw_sale_ticket_form(gui_controller, event_to_sale_ticket, type_ticket, clo
     with form_col:
         with st.form(key='sale_ticket_formefasfaef'):
 
+            # Campos del formulario
             buyer_name = st.text_input("Enter name")
             buyer_id = st.text_input("Enter ID")
             buyer_email = st.text_input("Enter email")  # Email del comprador
             buyer_age = st.number_input("Enter age", step=1)
             ticket_quantity = st.number_input("Enter ticket quantity", step=1)  # Cantidad de boletos
-
             how_did_you_know = st.radio("How did you know about the event?", OPTIONS_MARKETING)
-
             payment_method = st.radio("Select the payment method", OPTIONS_METHOD)
-
             complimentary_ticket = st.radio("Complimentary ticket", ["Yes", "No"])
 
-            # When the user presses the 'Submit' button, the form values are sent
             submit_button = st.form_submit_button(label="Sale")
 
             if submit_button:
                 st.session_state.confirm_sale = True
 
             if st.session_state.confirm_sale:
+                #  Verificar si la cantidad de tickets es válida
                 if gui_controller.verify_amount_tickets(event_to_sale_ticket, type_ticket, ticket_quantity):
-                    if complimentary_ticket == "Yes":
+                    if complimentary_ticket == "Yes":  # Si el ticket es cortesía
                         type_ticket = 'complementary'
                         ticket_price = 0
+                    #  Vender el ticket
                     gui_controller.ticket_sale(event_to_sale_ticket, type_ticket, ticket_quantity, ticket_price
                                                , payment_method, buyer_name, buyer_id, buyer_email, buyer_age,
                                                how_did_you_know)

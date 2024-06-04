@@ -7,8 +7,7 @@ from view.event_manager_view import draw_create_event_interface, draw_events_lib
     draw_searched_event_interface
 from view.ticket_office_view import draw_ticket_management_interface, draw_ticket_sales_management_interface
 from view.access_management_view import draw_register_access_interface
-from view.home_view import draw_dashboard, draw_sales_report_interface, draw_financial_reports_interface, \
-    draw_demographic_reports_interface, draw_artist_reports_interface
+from view.home_view import draw_dashboard, draw_sales_report_interface, draw_financial_reports_interface
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
@@ -16,7 +15,7 @@ from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
 
 # Navigation menu
 def draw_option_menu(gui_controller):
-    """Draw the navigation menu of the application"""
+    """Dibujar el menu de navegacion de la aplicacion"""
 
     with st.sidebar:
         st.title("Humor Hub")
@@ -37,8 +36,7 @@ def draw_option_menu(gui_controller):
             }
         )
 
-
-    # Depending on the selected option in the menu, set the current page
+    #  Cambiar de pagina segun la opcion seleccionada
     if menu == "Home":
         gui_controller.run_page = "home"
     elif menu == "Events":
@@ -51,31 +49,34 @@ def draw_option_menu(gui_controller):
 
 # Main pages of the GUI
 def draw_home_page(gui_controller):
-    """On the home page, the user is welcomed and the main dashboard of the application is managed"""
+
+    """ Dibujar la pagina principal de la aplicacion """
+
     if "dashboard" not in st.session_state:
         st.session_state.dashboard = False
+    #  Titulo
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
-
     st.markdown("# <div class='title_main_page'>HOME PAGE</div>", unsafe_allow_html=True)
+
     st.markdown("<h1 style='text-align: center;'>Welcome  😎 </h1>", unsafe_allow_html=True)
     st.text("Welcome, the best event management application. Here you can manage events, ticket sales,"
             "access to events, and view reports.")
+
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # dash boards
-    draw_dashboard(gui_controller)
-    sales_report_col, financial_reports_col = st.columns([1, 1])
-    with sales_report_col:
-        draw_sales_report_interface(gui_controller)
-    with financial_reports_col:
-        draw_financial_reports_interface(gui_controller)
+    draw_dashboard(gui_controller)  # view/home_view
 
-    demographic_reports_col, artist_reports_col = st.columns([1, 1])
+    sales_report_col, financial_reports_col = st.columns([1, 1])  # columnas
+
+    with sales_report_col:
+        draw_sales_report_interface(gui_controller)  # view/home_view
+
+    """demographic_reports_col, artist_reports_col = st.columns([1, 1])
 
     with demographic_reports_col:
         draw_demographic_reports_interface(gui_controller)
     with artist_reports_col:
-        draw_artist_reports_interface(gui_controller)
+        draw_artist_reports_interface(gui_controller)"""
 
 
 def draw_event_manager_page(gui_controller):
@@ -102,6 +103,7 @@ def draw_event_manager_page(gui_controller):
     """ Crear evento """
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("Create Event  🗓️ ")
+
     # columnas
     empty, select_event_type_col, select_button_col, close_button_col, empty = st.columns([0.9, 1, 0.5, 0.4, 0.6])
 
@@ -113,6 +115,7 @@ def draw_event_manager_page(gui_controller):
         if st.button("Select"):
             st.session_state.create_event = True
             st.session_state.search_event = False  # Cierra la interfaz de búsqueda
+
     if st.session_state.create_event:
         empty, form_col, empty = st.columns([0.5, 3, 0.5])  # columnas
         with form_col:
@@ -121,9 +124,7 @@ def draw_event_manager_page(gui_controller):
     """ Consular, editar o eliminar evento """
 
     st.markdown("<br>", unsafe_allow_html=True)
-
     st.subheader("Consult event 🔍")
-
     st.markdown("<br>", unsafe_allow_html=True)
 
     date_event_col, search_button_col, close_button_col, empty = st.columns([1, 0.5, 0.3, 2])  # columnas
@@ -168,6 +169,7 @@ def draw_ticket_office_page(gui_controller):
     st.markdown("# <div class='title_main_page'>TICKET OFFICE</div>", unsafe_allow_html=True)
     st.markdown("<br><br>", unsafe_allow_html=True)
 
+    #  Columnas
     (empty, management_col, close_button_col, empty,
      sales_col, close_button_col1, empty) = st.columns([0.5, 1, 0.3, 1, 1, 0.3, 0.1])
 
@@ -204,12 +206,17 @@ def draw_access_management_page(gui_controller):
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # Verificar si hay eventos para hoy
     current_date = gui_controller.back_controller.get_current_date()
     event_today = gui_controller.back_controller.get_event_by_date(current_date)
+
     if event_today:
+        # Mostrar el evento programado para hoy
         st.markdown("<h1 style='text-align: center;'>Event programing for today  📌 </h1>", unsafe_allow_html=True)
         st.markdown("<br><br>", unsafe_allow_html=True)
+
         name_event_col, opening_time_col, show_time_col = st.columns([1, 1.4, 0.7])  # Columns
+
         with name_event_col:
             st.markdown(f"<h4>Event: {event_today.name}</h4>", unsafe_allow_html=True)
         with opening_time_col:
@@ -223,8 +230,9 @@ def draw_access_management_page(gui_controller):
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("Register access"):
                 st.session_state.access_management = True
+
         if st.session_state.access_management:
-            draw_register_access_interface(gui_controller, event_today, close_button)
+            draw_register_access_interface(gui_controller, event_today, close_button)  # view/access_management_view
 
     else:
         st.markdown("<h1 style='text-align: center;'>Not event for today  😅 </h1>", unsafe_allow_html=True)
