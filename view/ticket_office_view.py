@@ -4,7 +4,7 @@ from settings import TICKET_EVENT_FIELDS, OPTIONS_MARKETING, OPTIONS_METHOD
 """ Ticket management interface """
 
 
-def draw_ticket_management_interface(gui_controller):
+def draw_ticket_management_interface(gui_controller, close_button_col):
     # Initialize session state variables if they don't exist
     if "edit_ticket" not in st.session_state:
         st.session_state.edit_ticket = False
@@ -31,11 +31,12 @@ def draw_ticket_management_interface(gui_controller):
             else:
                 draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_management_ticket,
                                                    search_event_col, type_ticket_col)  # view/ticket_office_view
-
-    if st.button("Close", key="close_ticket_management"):
-        st.session_state.ticket_management = False
-        st.session_state.edit_ticket = False
-        st.rerun()
+    with close_button_col:
+        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+        if st.button("❌", key="close_ticket_management"):
+            st.session_state.ticket_management = False
+            st.session_state.edit_ticket = False
+            st.rerun()
 
 
 def draw_assign_ticket_price_interface(gui_controller, type_ticket, event_to_management_ticket,
@@ -100,11 +101,13 @@ def draw_edit_ticket_interface(gui_controller, event_to_edit_ticket, ticket_type
 """ Sales management interface """
 
 
-def draw_ticket_sales_management_interface(gui_controller):
+def draw_ticket_sales_management_interface(gui_controller, close_button_col):
     # Initialize session state variables if they don't exist
     if "sale_ticket" not in st.session_state:
         st.session_state.sale_ticket = False
-    empty, search_event_col, ticket_type_col, button_col = st.columns([0.5, 0.6, 0.5, 0.9])  # Columns
+
+    st.markdown("<br> <br>", unsafe_allow_html=True)
+    empty, search_event_col, ticket_type_col, button_col = st.columns([0.6, 0.6, 0.5, 0.9])  # Columns
     event_dates = gui_controller.back_controller.get_all_event_dates()
 
     with search_event_col:
@@ -116,7 +119,7 @@ def draw_ticket_sales_management_interface(gui_controller):
     if event_date_to_sale_ticket is None:
         st.info("There are no events to edit")
     else:
-        with (ticket_type_col):
+        with ticket_type_col:
             ticket_type = st.selectbox("Select the type of ticket", ["presale", "regular"])
 
             with button_col:
@@ -131,17 +134,20 @@ def draw_ticket_sales_management_interface(gui_controller):
             else:
                 draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, ticket_type)
             # view/ticket_office_view
-
-    if st.button("Close", key="close_ticket_sales_management"):
-        st.session_state.ticket_sale_management = False
-        st.rerun()
+    with close_button_col:
+        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+        if st.button("❌", key="close_ticket_sales_management"):
+            st.session_state.ticket_sale_management = False
+            st.rerun()
 
 
 def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket):
     if "sale_ticket_form" not in st.session_state:
         st.session_state.sale_ticket_form = False
 
-    col1, col2, col3, col4 = st.columns([0.8, 1, 1.5, 1])  # Columns
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2, col3, col4 = st.columns([1.2, 1, 1.5, 1])  # Columns
     ticket = gui_controller.back_controller.get_event_ticket(type_ticket, event_to_sale_ticket)
 
     if ticket.amount_available == 0:
@@ -156,7 +162,10 @@ def draw_sale_ticket_interface(gui_controller, event_to_sale_ticket, type_ticket
             elif type_ticket == "regular":
                 st.write(f"regular tickets avaliable: {event_to_sale_ticket.tickets[1].amount_available}")
             st.write(f"Total tickets sold: {len(event_to_sale_ticket.sold_tickets)}")
-        empty, button_sale_col, button_sold_out, close_button, empty = st.columns([0.5, 1, 1, 1, 0.5])  # Columns
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        empty, button_sale_col, button_sold_out, close_button, empty = st.columns([1.3, 1, 1, 1, 0.2])  # Columns
         with button_sale_col:
             if st.button("Sale ticket"):
                 st.session_state.sale_ticket_form = True

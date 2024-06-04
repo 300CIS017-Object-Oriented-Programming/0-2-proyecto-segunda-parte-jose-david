@@ -1,5 +1,6 @@
 # Importando la biblioteca requerida
 import streamlit as st
+from settings import SEPARATOR
 
 
 # Función para dibujar la interfaz para crear un evento
@@ -33,7 +34,7 @@ def draw_create_event_interface(gui_controller, event_type, close_button_col):
     with close_button_col:
         st.write("")
         st.write("")
-        if st.button('close', key="close_create_event"):
+        if st.button('❌', key="close_create_event"):
             st.session_state.create_event = False
             st.rerun()
 
@@ -73,7 +74,7 @@ def draw_searched_event_interface(gui_controller, event_date_consult, close_butt
     with close_button_col:
         st.write("")  # por motivos esteticos
         st.write("")
-        if st.button('close', key="close_search_event"):  # FIXME: cambiar a un icono X
+        if st.button('❌', key="close_search_event"):  # FIXME: cambiar a un icono X
             st.session_state.search_event = False
             st.session_state.edit_event_interface = False  # Cierra la interfaz de edición
             st.session_state.delete_event_interface = False  # Cierra la interfaz de eliminación
@@ -97,12 +98,15 @@ def draw_input_field(field, config):
 
 # Función para mostrar un evento
 def display_event(gui_controller, event):
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # Convirtiendo el objeto de evento en un diccionario de atributos
     event_dict = dict(vars(event))
     # Obteniendo el diccionario de campos correspondiente al tipo de evento
     event_fields = gui_controller.back_controller.choose_event_fields(event.type)
     # Creando tres columnas
     col1, col2, col3 = st.columns(3)
+
 
     # Dividiendo los campos en tres listas
     fields = list(event_fields.items())
@@ -112,6 +116,7 @@ def display_event(gui_controller, event):
     fields3 = fields[2 * third:]
 
     # Mostrando los campos en las tres columnas
+
     for field, config in fields1:
         with col1:
             st.write(f"{config['label']}: {event_dict.get(field, '')}")
@@ -121,6 +126,8 @@ def display_event(gui_controller, event):
     for field, config in fields3:
         with col3:
             st.write(f"{config['label']}: {event_dict.get(field, '')}")
+
+    st.markdown(SEPARATOR, unsafe_allow_html=True)
 
 
 # Función para dibujar la biblioteca de eventos
@@ -146,7 +153,7 @@ def draw_events_library(gui_controller, close_button_col):
                 with col1:
                     display_event(gui_controller, event)
     with close_button_col:
-        if st.button("Close library"):  # FIXME: cambiar a un icono X
+        if st.button("❌"):  # FIXME: cambiar a un icono X
             st.session_state.show_event_library = False
             st.rerun()
 
@@ -188,10 +195,8 @@ def draw_delete_event_interface(gui_controller, searched_event):
             gui_controller.delete_event(searched_event)
 
     with no_button_col:
-        if st.button("Close"):
+        if st.button("❌"):
             st.session_state.delete_event_interface = False
             st.experimental_rerun()
 
-
 # Función para dibujar el campo de entrada para editar un evento basado en su tipo
-

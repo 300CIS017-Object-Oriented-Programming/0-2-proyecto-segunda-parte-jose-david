@@ -2,14 +2,14 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import plotly.express as px
-
+from settings import button_style
 from view.event_manager_view import draw_create_event_interface, draw_events_library, \
     draw_searched_event_interface
 from view.ticket_office_view import draw_ticket_management_interface, draw_ticket_sales_management_interface
 from view.access_management_view import draw_register_access_interface
-from view.home_view import draw_dashboard
+from view.home_view import draw_dashboard, draw_sales_report_interface, draw_financial_reports_interface, \
+    draw_demographic_reports_interface, draw_artist_reports_interface
 from settings import TITLE_MAIN_PAGE, TITLE_MAIN_FUNCTIONS
-
 
 """"Main view module for the GUI of the application. This module contains the main pages of the GUI."""
 
@@ -36,6 +36,8 @@ def draw_option_menu(gui_controller):
                 }
             }
         )
+
+
     # Depending on the selected option in the menu, set the current page
     if menu == "Home":
         gui_controller.run_page = "home"
@@ -55,38 +57,25 @@ def draw_home_page(gui_controller):
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
 
     st.markdown("# <div class='title_main_page'>HOME PAGE</div>", unsafe_allow_html=True)
-    st.markdown("""
-    # 🎉 Welcome to Humor Hub 🎉
-    Here you can manage events, ticket sales, access, and reports.
+    st.markdown("<h1 style='text-align: center;'>Welcome  😎 </h1>", unsafe_allow_html=True)
+    st.text("Welcome, the best event management application. Here you can manage events, ticket sales,"
+            "access to events, and view reports.")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    Use the menu on the left to navigate through the different sections of the application. Enjoy your stay!
-    """, unsafe_allow_html=True)
+    # dash boards
+    draw_dashboard(gui_controller)
+    sales_report_col, financial_reports_col = st.columns([1, 1])
+    with sales_report_col:
+        draw_sales_report_interface(gui_controller)
+    with financial_reports_col:
+        draw_financial_reports_interface(gui_controller)
 
-    # dash board
+    demographic_reports_col, artist_reports_col = st.columns([1, 1])
 
-    st.markdown("## Dashboard")
-    st.text("put a date range")
-    empty, start_date_col, end_date_col, button_col, empty = st.columns([2, 1, 1, 1, 2])
-    with start_date_col:
-        star_date = st.date_input("star_date")
-    with end_date_col:
-        end_date = st.date_input("end_date")
-    with button_col:
-        st.write("")
-        st.write("")
-        if st.button("show dashboard"):
-            st.session_state.dashboard = True
-
-        m = st.markdown("""
-               <style>
-               div.stButton > button:first-child {
-                   background-color: #cc7000;
-               }
-               </style>""", unsafe_allow_html=True)
-
-    empty, dashboard_col = st.columns([1, 4])
-    if st.session_state.dashboard:
-        draw_dashboard(gui_controller, star_date, end_date)
+    with demographic_reports_col:
+        draw_demographic_reports_interface(gui_controller)
+    with artist_reports_col:
+        draw_artist_reports_interface(gui_controller)
 
 
 def draw_event_manager_page(gui_controller):
@@ -103,20 +92,16 @@ def draw_event_manager_page(gui_controller):
     if "show_event_library" not in st.session_state:
         st.session_state.show_event_library = False
 
-    m = st.markdown("""
-                   <style>
-                   div.stButton > button:first-child {
-                       background-color: #cc7000;
-                   }
-                   </style>""", unsafe_allow_html=True)
+    #  Agregar estilo a los botones
+    st.markdown(button_style, unsafe_allow_html=True)
 
     # Titulo
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_page'>Event Manager</div>", unsafe_allow_html=True)
 
     """ Crear evento """
-
-    st.subheader("Create Event")
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.subheader("Create Event  🗓️ ")
     # columnas
     empty, select_event_type_col, select_button_col, close_button_col, empty = st.columns([0.9, 1, 0.5, 0.4, 0.6])
 
@@ -135,7 +120,11 @@ def draw_event_manager_page(gui_controller):
 
     """ Consular, editar o eliminar evento """
 
-    st.subheader("Consult event")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.subheader("Consult event 🔍")
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     date_event_col, search_button_col, close_button_col, empty = st.columns([1, 0.5, 0.3, 2])  # columnas
 
@@ -166,69 +155,76 @@ def draw_event_manager_page(gui_controller):
 def draw_ticket_office_page(gui_controller):
     """On this page the user can manage the ticketing of the events and the sales"""
 
-    m = st.markdown("""
-                   <style>
-                   div.stButton > button:first-child {
-                       background-color: #cc7000;
-                   }
-                   </style>""", unsafe_allow_html=True)
-
     # Initialize session state variables if they don't exist
     if "ticket_sale_management" not in st.session_state:
         st.session_state.ticket_sale_management = False
     if "ticket_management" not in st.session_state:
         st.session_state.ticket_management = False
 
+    #  Agregar estilo a los botones
+    st.markdown(button_style, unsafe_allow_html=True)
+
     st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
     st.markdown("# <div class='title_main_page'>TICKET OFFICE</div>", unsafe_allow_html=True)
-    empty, management_col, sales_col, empty = st.columns([1, 1, 1, 1])
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    (empty, management_col, close_button_col, empty,
+     sales_col, close_button_col1, empty) = st.columns([0.5, 1, 0.3, 1, 1, 0.3, 0.1])
 
     """ Tickets management """
 
     with management_col:
-        st.subheader("price of the tickets")
+        st.subheader("Price of the tickets 🎫")
+        st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Tickets management"):
             st.session_state.ticket_management = True
             st.session_state.ticket_sale_management = False  # Close the ticket sales management interface
 
     if st.session_state.ticket_management:
-        draw_ticket_management_interface(gui_controller)  # view/ticket_office_view
+        draw_ticket_management_interface(gui_controller, close_button_col)  # view/ticket_office_view
 
     """ Ticket sales management """
 
     with sales_col:
-        st.subheader("Sales management")
+        st.subheader("Sales management 💰")
+        st.markdown("<br>", unsafe_allow_html=True)
         if st.button("Sales management"):
             st.session_state.ticket_sale_management = True
 
     if st.session_state.ticket_sale_management:
-        draw_ticket_sales_management_interface(gui_controller)  # view/ticket_office_view
+        draw_ticket_sales_management_interface(gui_controller, close_button_col1)  # view/ticket_office_view
 
 
 def draw_access_management_page(gui_controller):
     if "access_management" not in st.session_state:
         st.session_state.access_management = False
 
-    st.markdown(TITLE_MAIN_FUNCTIONS, unsafe_allow_html=True)
-    st.markdown("# <div class='title_main_functions'>Manejo de ingreso</div>", unsafe_allow_html=True)
+    st.markdown(TITLE_MAIN_PAGE, unsafe_allow_html=True)
+    st.markdown("# <div class='title_main_page'>ACCSESS MANAGEMENT</div>", unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     current_date = gui_controller.back_controller.get_current_date()
     event_today = gui_controller.back_controller.get_event_by_date(current_date)
     if event_today:
-        st.write("Event programing for today")  # FIXME: CSS
-        name_event_col, opening_time_col, show_time_col = st.columns([1, 1, 1])  # Columns
+        st.markdown("<h1 style='text-align: center;'>Event programing for today  📌 </h1>", unsafe_allow_html=True)
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        name_event_col, opening_time_col, show_time_col = st.columns([1, 1.4, 0.7])  # Columns
         with name_event_col:
-            st.write(f"Event: {event_today.name}")
+            st.markdown(f"<h4>Event: {event_today.name}</h4>", unsafe_allow_html=True)
         with opening_time_col:
-            st.write(f"Opening time: {event_today.opening_time}")
+            st.markdown(f"<h4>Opening time: {event_today.opening_time}</h4>", unsafe_allow_html=True)
         with show_time_col:
-            st.write(f"Show time: {event_today.show_time}")
-        button_col, close_button, empty = st.columns([1, 1, 3])  # Columns
+            st.markdown(f"<h4>Show time: {event_today.show_time}</h4>", unsafe_allow_html=True)
+
+        empty, button_col, close_button, empty = st.columns([2.5, 1, 1, 3])  # Columns
+
         with button_col:
+            st.markdown("<br>", unsafe_allow_html=True)
             if st.button("Register access"):
                 st.session_state.access_management = True
         if st.session_state.access_management:
             draw_register_access_interface(gui_controller, event_today, close_button)
 
     else:
-        st.subheader("No event for today")  # FIXME: CSS
+        st.markdown("<h1 style='text-align: center;'>Not event for today  😅 </h1>", unsafe_allow_html=True)

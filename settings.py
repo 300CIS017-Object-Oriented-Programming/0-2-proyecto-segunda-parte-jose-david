@@ -148,3 +148,40 @@ philanthropic_event_data = {
     'sponsors': 'Sponsor 1',
     'sponsorship_amount': 3000
 }
+
+
+button_style = """
+    <style>
+    div.stButton > button:first-child {
+        background: transparent;
+        border: 2px solid #ff8906;
+        color: #ff8906;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+    div.stButton > button:first-child:hover {
+        background: #ff8906;
+        color: white;
+        box-shadow: 0 0 10px #ff8906;  /* Sombra naranja */
+        transform: scale(1.1);  /* Hacer el botón un 10% más grande */
+    }
+    div.stButton > button:first-child:active {
+        background: #FFA07A; /* LightSalmon color */
+        color: white;
+    }
+    </style>
+"""
+
+SEPARATOR = """
+    <div style="
+        height: 2px;
+        background: linear-gradient(90deg, #808080, #A9A9A9);  /* De gris a DarkGray */
+        margin: 1.5em 0;
+    "></div>
+    <br>
+    <br>
+"""
