@@ -9,7 +9,7 @@ class TheaterEvent(Event):
         like rental cost of the theater.
     """
 
-    def __init__(self, name, date, opening_time, show_time, location, address, city, artists, rental_cost):
-        super().__init__(name, date, opening_time, show_time, location, address, city, artists)
+    def __init__(self, name, date, opening_time, show_time, location, address, city, artists, capacity, rental_cost):
+        super().__init__(name, date, opening_time, show_time, location, address, city, artists, capacity)
         self.rental_cost = rental_cost
 

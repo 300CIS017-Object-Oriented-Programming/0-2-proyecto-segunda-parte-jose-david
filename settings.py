@@ -1,10 +1,17 @@
+import streamlit as st
+
 TITLE_MAIN_PAGE = """
 <style>
 .title_main_page {
     text-align: center;
-    font-size: 60px;
+    font-size: 80px;
     font-family: 'Courier New', Courier, monospace;
-    text-shadow: 2px 2px black;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    background: -webkit-linear-gradient(left, #ffd803, #ff5733);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 </style>
 
@@ -48,42 +55,56 @@ document.addEventListener('DOMContentLoaded', set_title_color);
 """
 
 BAR_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Nombre"},
-    "date": {"type": "date", "label": "Fecha"},
-    "opening_time": {"type": "time", "label": "Hora de apertura"},
-    "show_time": {"type": "time", "label": "Hora del espectáculo"},
-    "location": {"type": "text", "label": "Ubicación"},
-    "address": {"type": "text", "label": "Dirección"},
-    "city": {"type": "text", "label": "Ciudad"},
-    "artists": {"type": "text", "label": "Artistas"},
-    "bar_profit": {"type": "number", "label": "Ganancia del bar"},
-    "artist_payment": {"type": "number", "label": "Pago al artista"},
+
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists(put a comma between artists)"},
+    "capacity": {"type": "number", "label": "Capacity"},
+    "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
+
 }
 
 THEATER_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Nombre"},
-    "date": {"type": "date", "label": "Fecha"},
-    "opening_time": {"type": "time", "label": "Hora de apertura"},
-    "show_time": {"type": "time", "label": "Hora del espectáculo"},
-    "location": {"type": "text", "label": "Ubicación"},
-    "address": {"type": "text", "label": "Dirección"},
-    "city": {"type": "text", "label": "Ciudad"},
-    "artists": {"type": "text", "label": "Artistas"},
-    "rental_cost": {"type": "number", "label": "Costo de alquiler"},
+    "name": {"type": "text", "label": "Name"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists(put a comma between artists)"},
+    "capacity": {"type": "number", "label": "Capacity"},
+    "rental_cost": {"type": "number", "label": "Rental Cost"},
+    "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
 }
 
 PHILANTHROPIC_EVENT_FIELDS = {
-    "name": {"type": "text", "label": "Nombre"},
-    "date": {"type": "date", "label": "Fecha"},
-    "opening_time": {"type": "time", "label": "Hora de apertura"},
-    "show_time": {"type": "time", "label": "Hora del espectáculo"},
-    "location": {"type": "text", "label": "Ubicación"},
-    "address": {"type": "text", "label": "Dirección"},
-    "city": {"type": "text", "label": "Ciudad"},
-    "artists": {"type": "text", "label": "Artistas"},
-    "sponsors": {"type": "text", "label": "Patrocinadores"},
-    "sponsorship_amount": {"type": "number", "label": "Monto del patrocinio"},
+    "name": {"type": "text", "label": "Name of event"},
+    "date": {"type": "date", "label": "Date"},
+    "opening_time": {"type": "time", "label": "Opening Time"},
+    "show_time": {"type": "time", "label": "Show Time"},
+    "location": {"type": "text", "label": "Location"},
+    "address": {"type": "text", "label": "Address"},
+    "city": {"type": "text", "label": "City"},
+    "artists": {"type": "text", "label": "Artists(put a comma between artists)"},
+    "capacity": {"type": "number", "label": "Capacity"},
+    "sponsors": {"type": "text", "label": "Sponsors"},
+    "sponsorship_amount": {"type": "number", "label": "Sponsorship Amount"},
+    "state": {"type": "select", "label": "State", "options": ["Cancelled", "Postponed", "Closed"]},
 }
+
+TICKET_EVENT_FIELDS = {
+    "price": {"type": "number", "label": "Price"},
+    "amount": {"type": "number", "label": "Amount"},
+}
+
+OPTIONS_MARKETING = ["Social Media", "Friends/Family", "Advertisement", "Other"]
+OPTIONS_METHOD = ["credit_card", "debit_card", "cash"]
 
 bar_event_data = {
     'name': 'Test Bar Event',
@@ -94,9 +115,12 @@ bar_event_data = {
     'address': '123 Test Street',
     'city': 'Test City',
     'artists': 'Artist 1',
+    'capacity': 100,
     'bar_profit': 1000,
     'artist_payment': 500
+
 }
+
 
 theater_event_data = {
     'name': 'Test Theater Event',
@@ -107,6 +131,7 @@ theater_event_data = {
     'address': '123 Test Street',
     'city': 'Test City',
     'artists': 'Artist 1',
+    'capacity': 100,
     'rental_cost': 2000
 }
 
@@ -119,6 +144,44 @@ philanthropic_event_data = {
     'address': '123 Test Street',
     'city': 'Test City',
     'artists': 'Artist 1',
+    'capacity': 100,
     'sponsors': 'Sponsor 1',
     'sponsorship_amount': 3000
 }
+
+
+button_style = """
+    <style>
+    div.stButton > button:first-child {
+        background: transparent;
+        border: 2px solid #ff8906;
+        color: #ff8906;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+    div.stButton > button:first-child:hover {
+        background: #ff8906;
+        color: white;
+        box-shadow: 0 0 10px #ff8906;  /* Sombra naranja */
+        transform: scale(1.1);  /* Hacer el botón un 10% más grande */
+    }
+    div.stButton > button:first-child:active {
+        background: #FFA07A; /* LightSalmon color */
+        color: white;
+    }
+    </style>
+"""
+
+SEPARATOR = """
+    <div style="
+        height: 2px;
+        background: linear-gradient(90deg, #808080, #A9A9A9);  /* De gris a DarkGray */
+        margin: 1.5em 0;
+    "></div>
+    <br>
+    <br>
+"""
