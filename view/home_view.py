@@ -25,8 +25,6 @@ def draw_dashboard(gui_controller):
 
     if st.session_state.dashboard:
         graph1, graph2 = st.columns([2, 2])
-        st.title("Welcome to the event manager")
-        st.write("This is the dashboard, here you can manage the events and the access to them")
         with graph1:
             # Cantidad de eventos creados por tipo
             event_types = gui_controller.back_controller.get_event_types_in_date_range(start_date, end_date)
