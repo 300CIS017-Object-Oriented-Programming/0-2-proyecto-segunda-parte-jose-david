@@ -200,7 +200,7 @@ El sistema permite la generación de reportes de los eventos. Se pueden generar 
 
 ## Uso
 
-En cuanto al uso puedes consultar este manuel de usuario [Manual de usuario](docs/Manual de usuario.pdf)
+En cuanto al uso puedes consultar este manuel de usuario [Manual de usuario](docs/Manual%20de%20usuario.pdf)
 
 
 ## Contacto
